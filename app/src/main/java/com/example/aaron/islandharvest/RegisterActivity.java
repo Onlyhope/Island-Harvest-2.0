@@ -1,7 +1,9 @@
 package com.example.aaron.islandharvest;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,6 +29,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText inputEmail;
     private EditText inputPassword;
 
+    private static final String USER_PREFERENCES = "userPreferences";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
 
         initializeButtons();
+
     }
 
     private void initializeButtons() {
@@ -46,6 +51,13 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 registerUser(v);
+            }
+        });
+        btnLinkToLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takeUserToLogin = new Intent();
+                startActivity(takeUserToLogin);
             }
         });
     }
@@ -92,8 +104,5 @@ public class RegisterActivity extends AppCompatActivity {
         RegisterRequest registerRequest = new RegisterRequest(fullName, email, password, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
         queue.add(registerRequest);
-
-
-
     }
 }

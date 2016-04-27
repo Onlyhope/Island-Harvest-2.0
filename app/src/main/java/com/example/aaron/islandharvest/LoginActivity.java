@@ -41,6 +41,13 @@ public class LoginActivity extends AppCompatActivity {
         btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
 
         initalizeButtons();
+
+        SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("email", "");
+        editor.putString("fullName", "");
+        editor.apply();
     }
 
     private void initalizeButtons() {
@@ -89,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         Intent takeUserToMain = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(takeUserToMain);
-
+                        finish();
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                         builder.setMessage("Login Failed")
