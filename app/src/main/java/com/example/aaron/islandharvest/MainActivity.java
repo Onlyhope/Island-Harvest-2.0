@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity
     private int donorID;
     private int foodID;
 
-    private static final String USER_PREFERENCES = "userPreferences";
+    public static final String USER_PREFERENCES = "userPreferences";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

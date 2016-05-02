@@ -86,16 +86,19 @@ public class LoginActivity extends AppCompatActivity {
                     if (success) {
                         String email = jsonResponse.getString("email");
                         String fullName = jsonResponse.getString("fullName");
+                        String routeID = jsonResponse.getString("routeID");
 
                         SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
 
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("email", email);
                         editor.putString("fullName", fullName);
+                        editor.putString("routeID", routeID);
                         editor.apply();
 
                         Intent takeUserToMain = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(takeUserToMain);
+
                         finish();
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);

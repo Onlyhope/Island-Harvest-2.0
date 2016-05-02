@@ -17,5 +17,18 @@
     <string name="welcome">Welcome</string>
     <string name="btn_logout">LOGOUT</string>
     <string name="name">Fullname</string>
+    <string name="title_activity_donation_entry">DonationEntry</string>
+    <string name="food_description_hint">Food Description</string>
+    <string name="food_amount_hint">Food amount</string>
+    <string name="food_type_label">Food Type:</string>
+    <string name="submit_text_button">Submit</string>
+
+    <string-array name="food_type">
+        <item></item>
+        <item>Dry</item>
+        <item>Frozen</item>
+        <item>Perishable</item>
+        <item>Non-Perishable</item>
+    </string-array>
 
 </resources>
