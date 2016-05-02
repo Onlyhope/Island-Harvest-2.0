@@ -21,6 +21,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp">
 
+
         <EditText
             android:id="@+id/foodDescripEditText"
             android:layout_width="fill_parent"
@@ -29,7 +30,7 @@
             android:background="@color/white"
             android:hint="@string/food_description_hint"
             android:padding="10dp"
-            android:scrollbars="vertical"></EditText>
+            android:scrollbars="vertical"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,16 +71,24 @@
                 android:background="@color/white"
                 android:text="15sp" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/submitInfoButton"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/btn_login_bg"
-            android:layout_marginTop="20dp"
-            android:onClick="editFoodDescrip"
-            android:text="@string/submit_text_button"
-            android:textColor="@color/btn_login" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="15dp">
+
+            <Button
+                android:id="@+id/submitInfoButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/btn_login_bg"
+                android:layout_marginBottom="20dp"
+                android:onClick="editFoodDescrip"
+                android:layout_alignParentBottom="true"
+                android:text="@string/submit_text_button"
+                android:textColor="@color/btn_login" />
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 </LinearLayout>

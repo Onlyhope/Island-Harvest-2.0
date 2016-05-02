@@ -21,10 +21,14 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FoodEntryActivity extends AppCompatActivity {
 
@@ -75,6 +79,7 @@ public class FoodEntryActivity extends AppCompatActivity {
     // Initializes the foodType Spinner
     private void initializeSpinner() {
         spinFoodType = (Spinner) findViewById(R.id.foodTypeSpinner);
+
         adapter = ArrayAdapter.createFromResource(this, R.array.food_type, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinFoodType.setAdapter(adapter);
@@ -187,4 +192,7 @@ public class FoodEntryActivity extends AppCompatActivity {
         queue.add(fetchFoodRequest);
     }
 
+
 }
+
+

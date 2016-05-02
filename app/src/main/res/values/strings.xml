@@ -22,6 +22,9 @@
     <string name="food_amount_hint">Food amount</string>
     <string name="food_type_label">Food Type:</string>
     <string name="submit_text_button">Submit</string>
+    <string name="update_food_entry">Update Food Entry</string>
+    <string name="start_button">Start</string>
+    <string name="complete_button">Complete</string>
 
     <string-array name="food_type">
         <item></item>
