@@ -1,11 +1,13 @@
 package com.example.aaron.islandharvest;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,8 +19,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private int ID;
+    private int userID;
+    private int agencyID;
+    private int donorID;
+    private int foodID;
 
     private static final String USER_PREFERENCES = "userPreferences";
 
@@ -30,10 +47,11 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "ID: " + ID + " " + userID + " " + agencyID + " " + donorID + " " + foodID, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -48,15 +66,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-        String email = sharedPref.getString("email", "");
-        String fullName = sharedPref.getString("fullName", "");
+        ID = Integer.parseInt(sharedPref.getString("routeID", ""));
 
-        if (email.equals("") || fullName.equals("")) {
-            Intent takeUserToLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(takeUserToLoginActivity);
-        } else {
-            Toast.makeText(this, email + " " + fullName, Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(this, "routeID: " + ID, Toast.LENGTH_LONG).show();
+
+        // Retrieve RouteData from MySQL database
+        fetchRouteInfo();
     }
 
     @Override
@@ -87,12 +102,6 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_logout) {
-            SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("email", "");
-            editor.putString("fullName", "");
-            editor.apply();
-
             Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
 
             Intent takeUserToLogin = new Intent(MainActivity.this, LoginActivity.class);
@@ -108,8 +117,9 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_food_entry) {
+            Intent goToFoodEntry = new Intent(MainActivity.this, FoodEntryActivity.class);
+            startActivity(goToFoodEntry);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -125,5 +135,57 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    // Server Code
+
+    public void fetchRouteInfo() {
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d("x123", response);
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+
+                    if (success) {
+                        userID = Integer.parseInt(jsonResponse.getString("userID"));
+                        donorID = Integer.parseInt(jsonResponse.getString("donorID"));
+                        agencyID = Integer.parseInt(jsonResponse.getString("agencyID"));
+                        foodID = Integer.parseInt(jsonResponse.getString("foodID"));
+
+                        SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("userID", userID + "");
+                        editor.putString("donorID", donorID + "");
+                        editor.putString("agencyID", agencyID + "");
+                        editor.putString("foodID", foodID + "");
+                        editor.apply();
+
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("Route data not fetched")
+                                .setNegativeButton("Ok", null)
+                                .create()
+                                .show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+            }
+        };
+
+        FetchRouteDataRequest fetchRouteDataRequest = new FetchRouteDataRequest(ID, responseListener, errorListener);
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        queue.add(fetchRouteDataRequest);
     }
 }
