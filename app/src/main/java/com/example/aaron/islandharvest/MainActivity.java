@@ -6,22 +6,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -46,6 +45,8 @@ public class MainActivity extends AppCompatActivity
     private TextView tvDonorAddr;
     private TextView tvAgencyAddr;
     private Button btnLinkToFoodEntry;
+    private Button btnStartTimeLog;
+    private Button btnCompleteTimeLog;
 
     public static final String USER_PREFERENCES = "userPreferences";
 
@@ -83,6 +84,8 @@ public class MainActivity extends AppCompatActivity
         tvDonorAddr = (TextView) findViewById(R.id.donorTextView);
         tvAgencyAddr = (TextView) findViewById(R.id.agencyTextView);
         btnLinkToFoodEntry = (Button) findViewById(R.id.linkToFoodEntryButton);
+        btnStartTimeLog = (Button) findViewById(R.id.startTimeLogButton);
+        btnCompleteTimeLog = (Button) findViewById(R.id.completeTimeLogButton);
 
         initializeButtons();
 
@@ -165,6 +168,20 @@ public class MainActivity extends AppCompatActivity
                 startActivity(goToFoodEntry);
             }
         });
+
+        btnStartTimeLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateStartTime();
+            }
+        });
+
+        btnCompleteTimeLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateEndTime();
+            }
+        });
     }
 
     // Server Code
@@ -223,5 +240,89 @@ public class MainActivity extends AppCompatActivity
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(fetchRouteDataRequest);
     }
+
+    private void updateStartTime() {
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Time logged")
+                        .setNegativeButton("Ok", null)
+                        .create()
+                        .show();
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+            }
+        };
+
+        UpdateStartTimeRequest updateStartTimeRequest = new UpdateStartTimeRequest(ID, responseListener, errorListener);
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        queue.add(updateStartTimeRequest);
+    }
+
+    private void updateEndTime() {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Time logged")
+                        .setNegativeButton("Ok", null)
+                        .create()
+                        .show();
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+            }
+        };
+
+        UpdateEndTimeRequest updateEndTimeRequest = new UpdateEndTimeRequest(ID, responseListener, errorListener);
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        queue.add(updateEndTimeRequest);
+    }
+}
+
+class UpdateStartTimeRequest extends StringRequest {
+
+    private static final String UPDATE_START_URL = "http://ihtest.comxa.com/StartTimeLog.php";
+    private Map<String, String> params;
+
+    public UpdateStartTimeRequest(int id, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(Method.POST, UPDATE_START_URL, listener, errorListener);
+        params = new HashMap<>();
+        params.put("ID", id + "");
+    }
+
+    @Override
+    public Map<String, String> getParams() {
+        return params;
+    }
+}
+
+class UpdateEndTimeRequest extends StringRequest {
+
+    private static final String UPDATE_END_URL = "http://ihtest.comxa.com/EndTimeLog.php";
+    private Map<String, String> params;
+
+    public UpdateEndTimeRequest(int id, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(Method.POST, UPDATE_END_URL, listener, errorListener);
+        params = new HashMap<>();
+        params.put("ID", id + "");
+    }
+
+    @Override
+    public Map<String, String> getParams() {
+        return params;
+    }
+
 }
 
