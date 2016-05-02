@@ -63,8 +63,7 @@ public class FoodEntryActivity extends AppCompatActivity {
         etFoodAmount = (EditText) findViewById(R.id.foodAmountEditText);
         btnSubmitFood = (Button) findViewById(R.id.submitInfoButton);
 
-        SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-        ID = Integer.parseInt(sharedPref.getString("foodID", ""));
+        ID = getIntent().getExtras().getInt("foodID");
 
         Toast.makeText(this, "foodID: " + ID, Toast.LENGTH_LONG).show();
 
@@ -93,7 +92,12 @@ public class FoodEntryActivity extends AppCompatActivity {
     }
 
     private void initializeButtons() {
-
+        btnSubmitFood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editFoodDescrip(v);
+            }
+        });
     }
 
     public void editFoodDescrip(View view) {
@@ -105,22 +109,22 @@ public class FoodEntryActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String response) {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-
-                    if (success) {
-
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
-                        builder.setMessage("Food entry was not submitted")
-                                .setNegativeButton("Retry", null)
-                                .create()
-                                .show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    JSONObject jsonResponse = new JSONObject(response);
+//                    boolean success = jsonResponse.getBoolean("success");
+//
+//                    if (success) {
+//
+//                    } else {
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+//                        builder.setMessage("Food entry was not submitted")
+//                                .setNegativeButton("Retry", null)
+//                                .create()
+//                                .show();
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
         };
 
@@ -133,7 +137,7 @@ public class FoodEntryActivity extends AppCompatActivity {
 
         Toast.makeText(FoodEntryActivity.this, "Submitting Information...", Toast.LENGTH_SHORT).show();
 
-        FoodEntryRequest foodEntryRequest = new FoodEntryRequest(foodDescrip, foodType, foodAmount, responseListener, errorListener);
+        FoodEntryRequest foodEntryRequest = new FoodEntryRequest(ID, foodDescrip, foodType, foodAmount, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(FoodEntryActivity.this);
         queue.add(foodEntryRequest);
     }
@@ -145,7 +149,6 @@ public class FoodEntryActivity extends AppCompatActivity {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("x123", response);
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
