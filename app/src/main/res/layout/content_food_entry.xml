@@ -78,7 +78,8 @@
             android:background="@color/btn_login_bg"
             android:layout_marginTop="20dp"
             android:onClick="editFoodDescrip"
-            android:text="@string/submit_text_button" />
+            android:text="@string/submit_text_button"
+            android:textColor="@color/btn_login" />
 
     </LinearLayout>
 </LinearLayout>

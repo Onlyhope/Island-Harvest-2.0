@@ -41,13 +41,6 @@ public class LoginActivity extends AppCompatActivity {
         btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
 
         initalizeButtons();
-
-        SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("email", "");
-        editor.putString("fullName", "");
-        editor.apply();
     }
 
     private void initalizeButtons() {

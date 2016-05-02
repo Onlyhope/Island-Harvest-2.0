@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/agencyTextView"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/btn_login"
         android:background="@color/btn_login_bg"
         android:layout_margin="15dp"
         android:text="Update Food Entry" />

@@ -31,4 +31,21 @@
         <item>Non-Perishable</item>
     </string-array>
 
+    <string-array name="food_descrip">
+        <item>Non Foods</item>
+        <item>Baby Food / Formula</item>
+        <item>Beverage</item>
+        <item>Bread &amp; Bakery</item>
+        <item>Meals / Entrees / Soups</item>
+        <item>Dairy Products</item>
+        <item>Health &amp; Beauty Care</item>
+        <item>Cleaning Products</item>
+        <item>Juice 100%</item>
+        <item>Meat / Fish / Poultry</item>
+        <item>Mixed &amp; Assorted</item>
+        <item>Pet Food/Care</item>
+        <item>Produce Fresh</item>
+        <item>Prepared &amp; Perishable</item>
+    </string-array>
+
 </resources>

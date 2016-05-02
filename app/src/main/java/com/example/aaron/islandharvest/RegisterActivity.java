@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnLinkToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent takeUserToLogin = new Intent();
+                Intent takeUserToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(takeUserToLogin);
             }
         });

@@ -30,6 +30,7 @@ public class FoodEntryActivity extends AppCompatActivity {
 
     private EditText etFoodDescrip;
     private EditText etFoodAmount;
+    private Spinner spinFoodDescrip;
     private Spinner spinFoodType;
     private Button btnSubmitFood;
 
@@ -89,6 +90,8 @@ public class FoodEntryActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     private void initializeButtons() {
@@ -109,26 +112,11 @@ public class FoodEntryActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String response) {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-
-                    if (success) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
-                        builder.setMessage("Food entry was submitted")
-                                .setNegativeButton("OK", null)
-                                .create()
-                                .show();
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
-                        builder.setMessage("Food entry was not submitted")
-                                .setNegativeButton("Retry", null)
-                                .create()
-                                .show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+                builder.setMessage(response)
+                        .setNegativeButton("Ok", null)
+                        .create()
+                        .show();
             }
         };
 

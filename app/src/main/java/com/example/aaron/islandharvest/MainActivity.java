@@ -181,12 +181,15 @@ public class MainActivity extends AppCompatActivity
                     boolean success = jsonResponse.getBoolean("success");
 
                     if (success) {
+                        String donorAddress = "Donor Address:\n";
+                        String agencyAddress = "Agency Address:\n";
+
                         userID = Integer.parseInt(jsonResponse.getString("userID"));
                         donorID = Integer.parseInt(jsonResponse.getString("donorID"));
                         agencyID = Integer.parseInt(jsonResponse.getString("agencyID"));
                         foodID = Integer.parseInt(jsonResponse.getString("foodID"));
-                        tvDonorAddr.setText(jsonResponse.getString("donorAddr"));
-                        tvAgencyAddr.setText(jsonResponse.getString("agencyAddr"));
+                        tvDonorAddr.setText(donorAddress + jsonResponse.getString("donorAddr"));
+                        tvAgencyAddr.setText(agencyAddress + jsonResponse.getString("agencyAddr"));
 
                         SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
