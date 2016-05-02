@@ -17,8 +17,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -28,6 +31,9 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -36,6 +42,10 @@ public class MainActivity extends AppCompatActivity
     private int agencyID;
     private int donorID;
     private int foodID;
+
+    private TextView tvDonorAddr;
+    private TextView tvAgencyAddr;
+    private Button btnLinkToFoodEntry;
 
     public static final String USER_PREFERENCES = "userPreferences";
 
@@ -70,8 +80,15 @@ public class MainActivity extends AppCompatActivity
 
         Toast.makeText(this, "routeID: " + ID, Toast.LENGTH_LONG).show();
 
+        tvDonorAddr = (TextView) findViewById(R.id.donorTextView);
+        tvAgencyAddr = (TextView) findViewById(R.id.agencyTextView);
+        btnLinkToFoodEntry = (Button) findViewById(R.id.linkToFoodEntryButton);
+
+        initializeButtons();
+
         // Retrieve RouteData from MySQL database
         fetchRouteInfo();
+
     }
 
     @Override
@@ -106,6 +123,7 @@ public class MainActivity extends AppCompatActivity
 
             Intent takeUserToLogin = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(takeUserToLogin);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -119,6 +137,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_food_entry) {
             Intent goToFoodEntry = new Intent(MainActivity.this, FoodEntryActivity.class);
+            goToFoodEntry.putExtra("foodID", foodID);
             startActivity(goToFoodEntry);
         } else if (id == R.id.nav_gallery) {
 
@@ -137,6 +156,17 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void initializeButtons() {
+        btnLinkToFoodEntry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToFoodEntry = new Intent(MainActivity.this, FoodEntryActivity.class);
+                goToFoodEntry.putExtra("foodID", foodID);
+                startActivity(goToFoodEntry);
+            }
+        });
+    }
+
     // Server Code
 
     public void fetchRouteInfo() {
@@ -145,8 +175,8 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onResponse(String response) {
-                Log.d("x123", response);
                 try {
+                    Log.d("x123", response);
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
 
@@ -155,6 +185,8 @@ public class MainActivity extends AppCompatActivity
                         donorID = Integer.parseInt(jsonResponse.getString("donorID"));
                         agencyID = Integer.parseInt(jsonResponse.getString("agencyID"));
                         foodID = Integer.parseInt(jsonResponse.getString("foodID"));
+                        tvDonorAddr.setText(jsonResponse.getString("donorAddr"));
+                        tvAgencyAddr.setText(jsonResponse.getString("agencyAddr"));
 
                         SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
@@ -189,3 +221,4 @@ public class MainActivity extends AppCompatActivity
         queue.add(fetchRouteDataRequest);
     }
 }
+

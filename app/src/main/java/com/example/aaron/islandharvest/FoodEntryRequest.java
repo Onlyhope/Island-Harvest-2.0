@@ -12,12 +12,13 @@ import java.util.Map;
  */
 public class FoodEntryRequest extends StringRequest {
 
-    private static final String FOOD_ENTRY_REQUEST_URL = "http://ihtest.comxa.com/FoodEntry.php";
+    private static final String FOOD_ENTRY_REQUEST_URL = "http://ihtest.comxa.com/UpdateFood.php";
     private Map<String, String> params;
 
-    public FoodEntryRequest(String foodDescrip, String foodType, double foodAmount, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+    public FoodEntryRequest(int id, String foodDescrip, String foodType, double foodAmount, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.POST, FOOD_ENTRY_REQUEST_URL, listener, errorListener);
         params = new HashMap<>();
+        params.put("ID", id + "");
         params.put("foodDescrip", foodDescrip);
         params.put("foodType", foodType);
         params.put("foodAmount", foodAmount + "");

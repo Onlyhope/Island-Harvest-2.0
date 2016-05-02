@@ -81,7 +81,7 @@ public class FoodEntryActivity extends AppCompatActivity {
         spinFoodType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(parent.getContext(), parent.getItemIdAtPosition(position) + " selected", Toast.LENGTH_LONG).show();
+                Toast.makeText(parent.getContext(), parent.getSelectedItem().toString() + " selected", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -109,22 +109,26 @@ public class FoodEntryActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String response) {
-//                try {
-//                    JSONObject jsonResponse = new JSONObject(response);
-//                    boolean success = jsonResponse.getBoolean("success");
-//
-//                    if (success) {
-//
-//                    } else {
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
-//                        builder.setMessage("Food entry was not submitted")
-//                                .setNegativeButton("Retry", null)
-//                                .create()
-//                                .show();
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+
+                    if (success) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+                        builder.setMessage("Food entry was submitted")
+                                .setNegativeButton("OK", null)
+                                .create()
+                                .show();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+                        builder.setMessage("Food entry was not submitted")
+                                .setNegativeButton("Retry", null)
+                                .create()
+                                .show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         };
 
