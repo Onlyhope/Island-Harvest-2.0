@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/bg_login"
     android:orientation="vertical"
-    android:paddingTop="20dp"
     android:paddingBottom="10dp"
+    android:paddingTop="20dp"
     android:weightSum="1"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".FoodEntryActivity"
@@ -22,47 +22,40 @@
         android:paddingRight="20dp">
 
 
-        <EditText
-            android:id="@+id/foodDescripEditText"
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:layout_margin="5dp"
-            android:background="@color/white"
-            android:hint="@string/food_description_hint"
-            android:padding="10dp"
-            android:scrollbars="vertical"/>
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:weightSum="1">
+
 
             <EditText
                 android:id="@+id/foodAmountEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
                 android:background="@color/white"
-                android:hint="@string/food_amount_hint"
+                android:hint="lb"
                 android:padding="10dp" />
-        </LinearLayout>
 
-        <LinearLayout
+            <Spinner
+                android:id="@+id/foodDescripSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginRight="30dp"
+                android:layout_toLeftOf="@id/foodAmountEditText"
+                android:background="@color/white"
+                android:text="15sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:orientation="horizontal"
             android:padding="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="5dp"
-                android:paddingRight="10dp"
-                android:text="@string/food_type_label"
-                android:textColor="@color/white" />
 
             <Spinner
                 android:id="@+id/foodTypeSpinner"
@@ -70,7 +63,8 @@
                 android:layout_height="50dp"
                 android:background="@color/white"
                 android:text="15sp" />
-        </LinearLayout>
+        </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -80,10 +74,10 @@
                 android:id="@+id/submitInfoButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/btn_login_bg"
-                android:layout_marginBottom="20dp"
-                android:onClick="editFoodDescrip"
                 android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:background="@color/btn_login_bg"
+                android:onClick="editFoodDescrip"
                 android:text="@string/submit_text_button"
                 android:textColor="@color/btn_login" />
 

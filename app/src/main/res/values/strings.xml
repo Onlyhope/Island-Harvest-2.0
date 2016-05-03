@@ -27,7 +27,7 @@
     <string name="complete_button">Complete</string>
 
     <string-array name="food_type">
-        <item></item>
+        <item>Food Type</item>
         <item>Dry</item>
         <item>Frozen</item>
         <item>Perishable</item>
@@ -35,6 +35,7 @@
     </string-array>
 
     <string-array name="food_descrip">
+        <item>Food Description</item>
         <item>Non Foods</item>
         <item>Baby Food / Formula</item>
         <item>Beverage</item>

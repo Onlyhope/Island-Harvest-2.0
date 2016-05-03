@@ -32,7 +32,6 @@ import java.util.Map;
 
 public class FoodEntryActivity extends AppCompatActivity {
 
-    private EditText etFoodDescrip;
     private EditText etFoodAmount;
     private Spinner spinFoodDescrip;
     private Spinner spinFoodType;
@@ -43,7 +42,8 @@ public class FoodEntryActivity extends AppCompatActivity {
     private int ID;
 
 
-    private ArrayAdapter<CharSequence> adapter;
+    private ArrayAdapter<CharSequence> foodTypeAdapter;
+    private ArrayAdapter<CharSequence> foodDescripAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,6 @@ public class FoodEntryActivity extends AppCompatActivity {
 
         initializeSpinner();
 
-        etFoodDescrip = (EditText) findViewById(R.id.foodDescripEditText);
         etFoodAmount = (EditText) findViewById(R.id.foodAmountEditText);
         btnSubmitFood = (Button) findViewById(R.id.submitInfoButton);
 
@@ -80,9 +79,9 @@ public class FoodEntryActivity extends AppCompatActivity {
     private void initializeSpinner() {
         spinFoodType = (Spinner) findViewById(R.id.foodTypeSpinner);
 
-        adapter = ArrayAdapter.createFromResource(this, R.array.food_type, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinFoodType.setAdapter(adapter);
+        foodTypeAdapter = ArrayAdapter.createFromResource(this, R.array.food_type, android.R.layout.simple_spinner_item);
+        foodTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinFoodType.setAdapter(foodTypeAdapter);
 
         spinFoodType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -96,7 +95,23 @@ public class FoodEntryActivity extends AppCompatActivity {
             }
         });
 
+        spinFoodDescrip = (Spinner) findViewById(R.id.foodDescripSpinner);
 
+        foodDescripAdapter = ArrayAdapter.createFromResource(this, R.array.food_descrip, android.R.layout.simple_spinner_item);
+        foodDescripAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinFoodDescrip.setAdapter(foodDescripAdapter);
+
+        spinFoodDescrip.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(parent.getContext(), parent.getSelectedItem().toString() + " selected", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void initializeButtons() {
@@ -109,7 +124,7 @@ public class FoodEntryActivity extends AppCompatActivity {
     }
 
     public void editFoodDescrip(View view) {
-        final String foodDescrip = etFoodDescrip.getText().toString().trim();
+        final String foodDescrip = spinFoodDescrip.getSelectedItem().toString();
         final String foodType = spinFoodType.getSelectedItem().toString();
         final double foodAmount = Double.parseDouble(etFoodAmount.getText().toString().trim());
 
@@ -151,11 +166,10 @@ public class FoodEntryActivity extends AppCompatActivity {
                     boolean success = jsonResponse.getBoolean("success");
 
                     if (success) {
-                        etFoodDescrip.setText(jsonResponse.getString("foodDescrip"));
                         etFoodAmount.setText(jsonResponse.getString("foodAmount"));
-                        String selection = jsonResponse.getString("foodType");
+                        String selectionType = jsonResponse.getString("foodType");
 
-                        switch (selection) {
+                        switch (selectionType) {
                             case "Dry": spinFoodType.setSelection(1);
                                 break;
                             case "Frozen": spinFoodType.setSelection(2);
@@ -167,6 +181,38 @@ public class FoodEntryActivity extends AppCompatActivity {
                             default: spinFoodType.setSelection(0);
                                 break;
                         }
+
+                        String selectionDescrip = jsonResponse.getString("foodDescrip");
+                            switch (selectionDescrip) {
+                                case "Non Foods": spinFoodDescrip.setSelection(1);
+                                    break;
+                                case "Baby Food / Formula": spinFoodDescrip.setSelection(2);
+                                    break;
+                                case "Beverage": spinFoodDescrip.setSelection(3);
+                                    break;
+                                case "Bread &amp; Bakery": spinFoodDescrip.setSelection(4);
+                                    break;
+                                case "Meals / Entrees / Soups": spinFoodDescrip.setSelection(5);
+                                    break;
+                                case "Dairy Products": spinFoodDescrip.setSelection(6);
+                                    break;
+                                case "Health &amp; Beauty Care": spinFoodDescrip.setSelection(7);
+                                    break;
+                                case "Cleaning Products": spinFoodDescrip.setSelection(8);
+                                    break;
+                                case "Juice 100%": spinFoodDescrip.setSelection(9);
+                                    break;
+                                case "Meat / Fish / Poultry": spinFoodDescrip.setSelection(10);
+                                    break;
+                                case "Mixed &amp; Assorted": spinFoodDescrip.setSelection(11);
+                                    break;
+                                case "Pet Food/Care": spinFoodDescrip.setSelection(12);
+                                    break;
+                                case "Produce Fresh": spinFoodDescrip.setSelection(13);
+                                    break;
+                                case "Prepared &amp; Perishable": spinFoodDescrip.setSelection(14);
+                                default: spinFoodDescrip.setSelection(0);
+                            }
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
                         builder.setMessage("Food data not fetched")
