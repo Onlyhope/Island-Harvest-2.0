@@ -1,9 +1,9 @@
 package com.example.aaron.islandharvest;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,35 +15,33 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class FoodEntryActivity extends AppCompatActivity {
+
+    public static String LAST_IMAGE;
 
     private EditText etFoodAmount;
     private Spinner spinFoodDescrip;
     private Spinner spinFoodType;
+    private ImageView signatureIV;
     private Button btnSubmitFood;
-
-    private static final String USER_PREFERENCES = "userPreferences";
 
     private int ID;
 
-
     private ArrayAdapter<CharSequence> foodTypeAdapter;
     private ArrayAdapter<CharSequence> foodDescripAdapter;
+    private static final int SIGNATURE_ACTIVITY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +60,17 @@ public class FoodEntryActivity extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        initializeSpinner();
 
         etFoodAmount = (EditText) findViewById(R.id.foodAmountEditText);
         btnSubmitFood = (Button) findViewById(R.id.submitInfoButton);
+        signatureIV = (ImageView) findViewById(R.id.signatureImageView);
 
         ID = getIntent().getExtras().getInt("foodID");
 
         Toast.makeText(this, "foodID: " + ID, Toast.LENGTH_LONG).show();
+
+        initializeSpinner();
+        initializeOnClickListeners();
 
         fetchFoodInfo();
     }
@@ -114,13 +115,41 @@ public class FoodEntryActivity extends AppCompatActivity {
         });
     }
 
-    private void initializeButtons() {
+    private void initializeOnClickListeners() {
         btnSubmitFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editFoodDescrip(v);
             }
         });
+
+        signatureIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takeUserToCaptureSignature = new Intent(FoodEntryActivity.this, CaptureSignature.class);
+                startActivityForResult(takeUserToCaptureSignature, SIGNATURE_ACTIVITY);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SIGNATURE_ACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    Bundle bundle = data.getExtras();
+                    String status = bundle.getString("status");
+                    if (status.equalsIgnoreCase("done")) {
+                        Log.v("log_ta", "Image Path: ");
+                        Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
+                        signatureIV.setImageBitmap(image);
+                        Toast toast = Toast.makeText(this, "Signature capture successful!", Toast.LENGTH_SHORT);
+//                        toast.setGravity(Gravity.TOP, 105, 50);
+                        toast.show();
+                    }
+                }
+                break;
+        }
     }
 
     public void editFoodDescrip(View view) {
@@ -170,49 +199,69 @@ public class FoodEntryActivity extends AppCompatActivity {
                         String selectionType = jsonResponse.getString("foodType");
 
                         switch (selectionType) {
-                            case "Dry": spinFoodType.setSelection(1);
+                            case "Dry":
+                                spinFoodType.setSelection(1);
                                 break;
-                            case "Frozen": spinFoodType.setSelection(2);
+                            case "Frozen":
+                                spinFoodType.setSelection(2);
                                 break;
-                            case "Perishable": spinFoodType.setSelection(3);
+                            case "Perishable":
+                                spinFoodType.setSelection(3);
                                 break;
-                            case "Non-Perishable": spinFoodType.setSelection(4);
+                            case "Non-Perishable":
+                                spinFoodType.setSelection(4);
                                 break;
-                            default: spinFoodType.setSelection(0);
+                            default:
+                                spinFoodType.setSelection(0);
                                 break;
                         }
 
                         String selectionDescrip = jsonResponse.getString("foodDescrip");
-                            switch (selectionDescrip) {
-                                case "Non Foods": spinFoodDescrip.setSelection(1);
-                                    break;
-                                case "Baby Food / Formula": spinFoodDescrip.setSelection(2);
-                                    break;
-                                case "Beverage": spinFoodDescrip.setSelection(3);
-                                    break;
-                                case "Bread &amp; Bakery": spinFoodDescrip.setSelection(4);
-                                    break;
-                                case "Meals / Entrees / Soups": spinFoodDescrip.setSelection(5);
-                                    break;
-                                case "Dairy Products": spinFoodDescrip.setSelection(6);
-                                    break;
-                                case "Health &amp; Beauty Care": spinFoodDescrip.setSelection(7);
-                                    break;
-                                case "Cleaning Products": spinFoodDescrip.setSelection(8);
-                                    break;
-                                case "Juice 100%": spinFoodDescrip.setSelection(9);
-                                    break;
-                                case "Meat / Fish / Poultry": spinFoodDescrip.setSelection(10);
-                                    break;
-                                case "Mixed &amp; Assorted": spinFoodDescrip.setSelection(11);
-                                    break;
-                                case "Pet Food/Care": spinFoodDescrip.setSelection(12);
-                                    break;
-                                case "Produce Fresh": spinFoodDescrip.setSelection(13);
-                                    break;
-                                case "Prepared &amp; Perishable": spinFoodDescrip.setSelection(14);
-                                default: spinFoodDescrip.setSelection(0);
-                            }
+                        switch (selectionDescrip) {
+                            case "Non Foods":
+                                spinFoodDescrip.setSelection(1);
+                                break;
+                            case "Baby Food / Formula":
+                                spinFoodDescrip.setSelection(2);
+                                break;
+                            case "Beverage":
+                                spinFoodDescrip.setSelection(3);
+                                break;
+                            case "Bread &amp; Bakery":
+                                spinFoodDescrip.setSelection(4);
+                                break;
+                            case "Meals / Entrees / Soups":
+                                spinFoodDescrip.setSelection(5);
+                                break;
+                            case "Dairy Products":
+                                spinFoodDescrip.setSelection(6);
+                                break;
+                            case "Health &amp; Beauty Care":
+                                spinFoodDescrip.setSelection(7);
+                                break;
+                            case "Cleaning Products":
+                                spinFoodDescrip.setSelection(8);
+                                break;
+                            case "Juice 100%":
+                                spinFoodDescrip.setSelection(9);
+                                break;
+                            case "Meat / Fish / Poultry":
+                                spinFoodDescrip.setSelection(10);
+                                break;
+                            case "Mixed &amp; Assorted":
+                                spinFoodDescrip.setSelection(11);
+                                break;
+                            case "Pet Food/Care":
+                                spinFoodDescrip.setSelection(12);
+                                break;
+                            case "Produce Fresh":
+                                spinFoodDescrip.setSelection(13);
+                                break;
+                            case "Prepared &amp; Perishable":
+                                spinFoodDescrip.setSelection(14);
+                            default:
+                                spinFoodDescrip.setSelection(0);
+                        }
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
                         builder.setMessage("Food data not fetched")

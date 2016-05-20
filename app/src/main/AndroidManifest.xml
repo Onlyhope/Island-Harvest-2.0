@@ -33,6 +33,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.aaron.islandharvest.MainActivity" />
         </activity>
+        <activity
+            android:name=".CaptureSignature"
+            android:theme="@style/AppTheme.CustomTheme" />
     </application>
 
 </manifest>
