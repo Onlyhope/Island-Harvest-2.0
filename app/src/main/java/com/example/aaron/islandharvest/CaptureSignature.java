@@ -57,7 +57,8 @@ public class CaptureSignature extends AppCompatActivity {
 
         prepareDirectory();
         uniqueID = getTodaysDate() + "_" + getCurrentTime() + "_" + Math.random();
-        current = uniqueID + ".png";
+//        current = uniqueID + ".png";
+        current = "signature.png";
         myPath = new File(directory, current);
 
         mContent = (LinearLayout) findViewById(R.id.signatureLinearLayout);
@@ -74,7 +75,6 @@ public class CaptureSignature extends AppCompatActivity {
         mClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("log_tag", "Panel Cleared");
                 mSignature.clear();
                 mGetSign.setEnabled(false);
             }
@@ -83,8 +83,6 @@ public class CaptureSignature extends AppCompatActivity {
         mGetSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("log_tag", "Panel Saved");
-
                 mView.setDrawingCacheEnabled(true);
                 mSignature.save(mView);
                 Bundle b = new Bundle();
@@ -99,7 +97,6 @@ public class CaptureSignature extends AppCompatActivity {
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("log_tag", "Panel Canceled");
                 Bundle b = new Bundle();
                 b.putString("status", "cancel");
                 Intent intent = new Intent();
@@ -189,9 +186,6 @@ public class CaptureSignature extends AppCompatActivity {
         }
 
         public void save(View v) {
-            Log.v("log_tag", "Width: " + v.getWidth());
-            Log.v("log_tag", "Height: " + v.getHeight());
-
             if (mBitmap == null) {
                 mBitmap = Bitmap.createBitmap(mContent.getWidth(), mContent.getHeight(), Bitmap.Config.RGB_565);
             }
@@ -200,19 +194,13 @@ public class CaptureSignature extends AppCompatActivity {
 
             try {
                 FileOutputStream mFileOutputStream = new FileOutputStream(myPath);
-
-                Log.v("log_tag", "filePath: " + myPath);
                 FoodEntryActivity.LAST_IMAGE = myPath.toString();
-
                 v.draw(canvas);
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutputStream);
                 mFileOutputStream.flush();
                 mFileOutputStream.close();
-
-                //String url = Images.Media.insertImage(getContentResolver(), mBitmap, "title", null);
-                //Log.v("log_tag", "url: " + url);
             } catch (Exception e) {
-                Log.v("log_tag", e.toString());
+                e.printStackTrace();
             }
         }
 
