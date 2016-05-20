@@ -119,6 +119,14 @@ public class FoodEntryActivity extends AppCompatActivity {
         btnSubmitFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (signatureIV.getDrawable() == null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+                    builder.setMessage("Please sign to submit info...")
+                            .setNegativeButton("Ok", null)
+                            .create()
+                            .show();
+                    return;
+                }
                 editFoodDescrip(v);
             }
         });
@@ -140,11 +148,9 @@ public class FoodEntryActivity extends AppCompatActivity {
                     Bundle bundle = data.getExtras();
                     String status = bundle.getString("status");
                     if (status.equalsIgnoreCase("done")) {
-                        Log.v("log_ta", "Image Path: ");
                         Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
                         signatureIV.setImageBitmap(image);
                         Toast toast = Toast.makeText(this, "Signature capture successful!", Toast.LENGTH_SHORT);
-//                        toast.setGravity(Gravity.TOP, 105, 50);
                         toast.show();
                     }
                 }
@@ -227,7 +233,7 @@ public class FoodEntryActivity extends AppCompatActivity {
                             case "Beverage":
                                 spinFoodDescrip.setSelection(3);
                                 break;
-                            case "Bread &amp; Bakery":
+                            case "Bread & Bakery":
                                 spinFoodDescrip.setSelection(4);
                                 break;
                             case "Meals / Entrees / Soups":
@@ -236,7 +242,7 @@ public class FoodEntryActivity extends AppCompatActivity {
                             case "Dairy Products":
                                 spinFoodDescrip.setSelection(6);
                                 break;
-                            case "Health &amp; Beauty Care":
+                            case "Health & Beauty Care":
                                 spinFoodDescrip.setSelection(7);
                                 break;
                             case "Cleaning Products":
@@ -248,7 +254,7 @@ public class FoodEntryActivity extends AppCompatActivity {
                             case "Meat / Fish / Poultry":
                                 spinFoodDescrip.setSelection(10);
                                 break;
-                            case "Mixed &amp; Assorted":
+                            case "Mixed & Assorted":
                                 spinFoodDescrip.setSelection(11);
                                 break;
                             case "Pet Food/Care":
@@ -257,8 +263,9 @@ public class FoodEntryActivity extends AppCompatActivity {
                             case "Produce Fresh":
                                 spinFoodDescrip.setSelection(13);
                                 break;
-                            case "Prepared &amp; Perishable":
+                            case "Prepared & Perishable":
                                 spinFoodDescrip.setSelection(14);
+                                break;
                             default:
                                 spinFoodDescrip.setSelection(0);
                         }
