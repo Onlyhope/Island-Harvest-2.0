@@ -9,54 +9,53 @@
         android:id="@+id/getSignatureLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/buttonLinearLayout"
         android:layout_margin="10dp"
         android:background="@color/white"
-        android:orientation="vertical"
-        android:layout_above="@+id/buttonLinearLayout">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/signatureLinearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            />
+            android:orientation="vertical" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttonLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_alignParentBottom="true"
+        android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
-
-        <Button
-            android:layout_marginBottom="10dp"
-            android:id="@+id/cancelButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/btn_login"
-            android:background="@color/btn_login_bg"
-            android:text="Cancel" />
-
-        <Button
-            android:id="@+id/clearButton"
-            android:layout_marginBottom="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/btn_login"
-            android:background="@color/btn_login_bg"
-
-            android:text="Clear" />
 
         <Button
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/btn_login"
+            android:layout_marginBottom="10dp"
             android:background="@color/btn_login_bg"
-            android:text="Save" />
+            android:text="Save"
+            android:textColor="@color/btn_login" />
+
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/btn_login_bg"
+            android:text="Clear"
+            android:textColor="@color/btn_login" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/btn_login_bg"
+            android:text="Cancel"
+            android:textColor="@color/btn_login" />
+
     </LinearLayout>
 
 </RelativeLayout>

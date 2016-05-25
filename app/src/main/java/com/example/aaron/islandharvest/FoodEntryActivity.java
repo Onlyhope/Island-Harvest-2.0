@@ -65,6 +65,11 @@ public class FoodEntryActivity extends AppCompatActivity {
         btnSubmitFood = (Button) findViewById(R.id.submitInfoButton);
         signatureIV = (ImageView) findViewById(R.id.signatureImageView);
 
+        if (LAST_IMAGE != null) {
+            Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
+            signatureIV.setImageBitmap(image);
+        }
+
         ID = getIntent().getExtras().getInt("foodID");
 
         Toast.makeText(this, "foodID: " + ID, Toast.LENGTH_LONG).show();

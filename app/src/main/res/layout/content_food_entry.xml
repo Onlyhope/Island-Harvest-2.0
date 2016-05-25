@@ -33,7 +33,7 @@
 
             <EditText
                 android:id="@+id/foodAmountEditText"
-                android:layout_width="60dp"
+                android:layout_width="100dp"
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
                 android:background="@color/white"
@@ -44,7 +44,7 @@
                 android:id="@+id/foodDescripSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="15dp"
                 android:layout_toLeftOf="@id/foodAmountEditText"
                 android:background="@color/white"
                 android:text="15sp" />

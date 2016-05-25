@@ -195,6 +195,9 @@ public class CaptureSignature extends AppCompatActivity {
             try {
                 FileOutputStream mFileOutputStream = new FileOutputStream(myPath);
                 FoodEntryActivity.LAST_IMAGE = myPath.toString();
+
+                Log.v("log_tag", myPath.toString());
+
                 v.draw(canvas);
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutputStream);
                 mFileOutputStream.flush();
