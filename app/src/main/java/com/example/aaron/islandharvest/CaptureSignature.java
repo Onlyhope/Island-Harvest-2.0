@@ -196,6 +196,7 @@ public class CaptureSignature extends AppCompatActivity {
                 FileOutputStream mFileOutputStream = new FileOutputStream(myPath);
                 FoodEntryActivity.LAST_IMAGE = myPath.toString();
                 AgencyInfoActivity.LAST_IMAGE = myPath.toString();
+                DonorInfoActivity.LAST_IMAGE = myPath.toString();
 
                 v.draw(canvas);
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutputStream);

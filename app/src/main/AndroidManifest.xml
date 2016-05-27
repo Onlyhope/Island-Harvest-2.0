@@ -45,6 +45,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.aaron.islandharvest.MainActivity" />
         </activity>
+        <activity
+            android:name=".DonorInfoActivity"
+            android:label="@string/title_activity_donor_info"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.aaron.islandharvest.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

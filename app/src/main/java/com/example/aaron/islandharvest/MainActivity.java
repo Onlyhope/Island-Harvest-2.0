@@ -143,7 +143,9 @@ public class MainActivity extends AppCompatActivity
             goToFoodEntry.putExtra("foodID", foodID);
             startActivity(goToFoodEntry);
         } else if (id == R.id.nav_donor) {
-
+            Intent goToDonorInfo = new Intent(MainActivity.this, DonorInfoActivity.class);
+            goToDonorInfo.putExtra("donorID", donorID);
+            startActivity(goToDonorInfo);
         } else if (id == R.id.nav_agency) {
             Intent goToAgencyInfo = new Intent(MainActivity.this, AgencyInfoActivity.class);
             goToAgencyInfo.putExtra("agencyID", agencyID);
