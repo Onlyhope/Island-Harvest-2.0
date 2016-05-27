@@ -1,6 +1,5 @@
 package com.example.aaron.islandharvest;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 

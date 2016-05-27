@@ -23,7 +23,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".RegisterActivity" />
         <activity
             android:name=".FoodEntryActivity"
             android:label="@string/title_activity_donation_entry"
@@ -36,6 +36,15 @@
         <activity
             android:name=".CaptureSignature"
             android:theme="@style/AppTheme.CustomTheme" />
+        <activity
+            android:name=".AgencyInfoActivity"
+            android:label="@string/title_activity_agency_info"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.aaron.islandharvest.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

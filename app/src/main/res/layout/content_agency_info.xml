@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_login"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.aaron.islandharvest.AgencyInfoActivity"
+    tools:showIn="@layout/activity_agency_info">
+
+    <TextView
+        android:id="@+id/agencyAddressTextView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/white"
+        android:padding="10dp"
+        android:scrollbars="vertical"
+        android:text="Celeste Slater \n606-3727 Ullamcorper. Street\nRoseville NH 11523\n(786) 713-8616"
+        android:textAlignment="center" />
+
+    <ImageView
+        android:id="@+id/agencySignatureImageButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/agencyAddressTextView"
+        android:padding="10dp"
+        android:background="@color/white" />
+
+</RelativeLayout>

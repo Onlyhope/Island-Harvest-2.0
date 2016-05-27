@@ -195,8 +195,7 @@ public class CaptureSignature extends AppCompatActivity {
             try {
                 FileOutputStream mFileOutputStream = new FileOutputStream(myPath);
                 FoodEntryActivity.LAST_IMAGE = myPath.toString();
-
-                Log.v("log_tag", myPath.toString());
+                AgencyInfoActivity.LAST_IMAGE = myPath.toString();
 
                 v.draw(canvas);
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutputStream);
@@ -214,10 +213,6 @@ public class CaptureSignature extends AppCompatActivity {
 
         @Override
         protected void onDraw(Canvas canvas) {
-//            super.onDraw(canvas);
-//
-//            canvas.drawColor(Color.WHITE);
-//            canvas.drawBitmap(mBitmap, (canvas.getWidth() / 2), 0, paint);
             canvas.drawPath(path, paint);
         }
 

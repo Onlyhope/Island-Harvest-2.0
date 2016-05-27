@@ -142,10 +142,12 @@ public class MainActivity extends AppCompatActivity
             Intent goToFoodEntry = new Intent(MainActivity.this, FoodEntryActivity.class);
             goToFoodEntry.putExtra("foodID", foodID);
             startActivity(goToFoodEntry);
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_donor) {
 
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_agency) {
+            Intent goToAgencyInfo = new Intent(MainActivity.this, AgencyInfoActivity.class);
+            goToAgencyInfo.putExtra("agencyID", agencyID);
+            startActivity(goToAgencyInfo);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

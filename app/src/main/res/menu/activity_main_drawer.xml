@@ -7,13 +7,13 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Food Entry" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_donor"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="Donor" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_agency"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:title="Agency" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
