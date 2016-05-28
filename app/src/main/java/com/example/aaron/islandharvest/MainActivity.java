@@ -356,6 +356,8 @@ public class MainActivity extends AppCompatActivity
         UploadImageRequest uploadVolunteerSigRequest = new UploadVolunteerImageRequest(ID, name, volunteerSig, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(uploadAgencySigRequest);
+        queue.add(uploadDonorSigRequest);
+        queue.add(uploadVolunteerSigRequest);
     }
 
 
