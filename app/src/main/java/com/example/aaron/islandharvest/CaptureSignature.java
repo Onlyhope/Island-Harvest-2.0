@@ -87,6 +87,7 @@ public class CaptureSignature extends AppCompatActivity {
                 mSignature.save(mView);
                 Bundle b = new Bundle();
                 b.putString("status", "done");
+                b.putString("filePath", myPath.toString());
                 Intent intent = new Intent();
                 intent.putExtras(b);
                 setResult(RESULT_OK, intent);
@@ -194,9 +195,6 @@ public class CaptureSignature extends AppCompatActivity {
 
             try {
                 FileOutputStream mFileOutputStream = new FileOutputStream(myPath);
-                FoodEntryActivity.LAST_IMAGE = myPath.toString();
-                AgencyInfoActivity.LAST_IMAGE = myPath.toString();
-                DonorInfoActivity.LAST_IMAGE = myPath.toString();
 
                 v.draw(canvas);
                 mBitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutputStream);

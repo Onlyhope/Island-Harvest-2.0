@@ -52,6 +52,7 @@ public class FoodEntryActivity extends AppCompatActivity {
     private ArrayAdapter<CharSequence> foodTypeAdapter;
     private ArrayAdapter<CharSequence> foodDescripAdapter;
     private static final int SIGNATURE_ACTIVITY = 1;
+    private static final int OTHER_ACTIVITY = 2;
 
     private String UPLOAD_URL = "http://ihtest.comxa.com/volunteerSigs/SignatureUpload.php";
 
@@ -163,18 +164,28 @@ public class FoodEntryActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case SIGNATURE_ACTIVITY:
+            case SIGNATURE_ACTIVITY:    // Passes earlier as 1 (value is arbitrary)
                 if (resultCode == RESULT_OK) {
                     Bundle bundle = data.getExtras();
                     String status = bundle.getString("status");
-                    if (status.equalsIgnoreCase("done")) {
+                    String filePath = bundle.getString("filePath");
+
+                    if (filePath != null) {
+                        LAST_IMAGE = filePath;
                         Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
                         signatureIV.setImageBitmap(image);
+                    }
+
+                    if (status.equalsIgnoreCase("done")) {
                         Toast toast = Toast.makeText(this, "Signature capture successful!", Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 }
                 break;
+            case OTHER_ACTIVITY:
+                break;
+            default:
+                Toast.makeText(FoodEntryActivity.this, "Defaulted onActivityResult", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -316,14 +327,6 @@ public class FoodEntryActivity extends AppCompatActivity {
 
     // Server code for uploading images
 
-    private String getStringImage(Bitmap bmp) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
-    }
-
     private void uploadImage() {
         // Showing the progress diaglog
         final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
@@ -349,7 +352,7 @@ public class FoodEntryActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 // Converting Bitmap to String
-                String image = getStringImage(signatureIV.getDrawingCache()); // getStringImage(bitmap);
+                String image = ""; //getStringImage(signatureIV.getDrawingCache()); // getStringImage(bitmap);
 
                 // Getting Image Name
                 String name = "temporaryName"; //editTextName.getText().toString().trim();
