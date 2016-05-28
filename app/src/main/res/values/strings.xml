@@ -53,10 +53,8 @@
         <item>Produce Fresh</item>
         <item>Prepared &amp; Perishable</item>
     </string-array>
-    <string name="title_activity_tabbed">TabbedActivity</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+
     <string name="title_activity_agency_info">AgencyInfoActivity</string>
-    <string name="title_activity_main2">Main2Activity</string>
     <string name="title_activity_donor_info">DonorInfoActivity</string>
 
 </resources>

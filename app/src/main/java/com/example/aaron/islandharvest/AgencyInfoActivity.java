@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -29,6 +30,8 @@ public class AgencyInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_agency_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
 
         ID = getIntent().getExtras().getInt("agencyID");
         Toast.makeText(this, "agencyID = " + ID, Toast.LENGTH_SHORT).show();
@@ -61,6 +64,16 @@ public class AgencyInfoActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     Bundle bundle = data.getExtras();
                     String status = bundle.getString("status");
+
+                    String filePath = bundle.getString("filePath");
+
+                    if (filePath != null) {
+                        LAST_IMAGE = filePath;
+                        Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
+                        agencySignatureIV.setImageBitmap(image);
+                    }
+
+
                     if (status.equalsIgnoreCase("done")) {
                         Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
                         agencySignatureIV.setImageBitmap(image);
