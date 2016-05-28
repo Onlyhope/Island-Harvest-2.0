@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -188,7 +189,7 @@ public class MainActivity extends AppCompatActivity
         btnCompleteTimeLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadSigantures();
+                uploadSignatures();
                 updateEndTime();
             }
         });
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity
      */
     private String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
@@ -313,7 +314,7 @@ public class MainActivity extends AppCompatActivity
         queue.add(updateEndTimeRequest);
     }
 
-    private void uploadSigantures() {
+    private void uploadSignatures() {
 
         final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
 
@@ -323,6 +324,7 @@ public class MainActivity extends AppCompatActivity
                 // Dismissing the progress dialog
                 loading.dismiss();
                 // Showing toast message of the response
+                Log.v("log_tag", response);
                 Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
             }
         };
@@ -330,32 +332,39 @@ public class MainActivity extends AppCompatActivity
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.v("log_tag", error.toString());
                 Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
             }
         };
 
-        String name = "";
-        String image = "";
+        String name = "temporaryName";
+        Bitmap agencyBMP = BitmapFactory.decodeFile(AgencyInfoActivity.LAST_IMAGE);
+        String image = getStringImage(agencyBMP); // Decodes the bitmap into a string
 
-        UploadImageRequest uploadImageRequest = new UploadImageRequest(name, image, responseListener, errorListener);
+        UploadImageRequest uploadImageRequest = new UploadImageRequest(ID, name, image, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(uploadImageRequest);
     }
+
+
 }
 
 class UploadImageRequest extends StringRequest {
 
-    private static final String UPLOAD_IMAGE_URL = "http://ihtest.comxa.com/volunteerSigs/SignatureUpload.php";
+    private static final String UPLOAD_IMAGE_URL = "http://ihtest.comxa.com/agencySigs/AgencySignatureUpload.php";
     private Map<String, String> params;
 
     private String KEY_IMAGE = "image";
     private String KEY_NAME = "name";
+    private String KEY_ID = "ID";
 
-    public UploadImageRequest(String name, String image, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+    public UploadImageRequest(int id, String name, String image, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.POST, UPLOAD_IMAGE_URL, listener, errorListener);
         params = new HashMap<>();
+        params.put(KEY_ID, id + "");
         params.put(KEY_NAME, "name");
         params.put(KEY_IMAGE, "image");
+
     }
 
     public Map<String, String> getParams() { return params; }
