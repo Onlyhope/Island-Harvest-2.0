@@ -339,6 +339,7 @@ public class MainActivity extends AppCompatActivity
 
         String name = "temporaryName";
         Bitmap agencyBMP = BitmapFactory.decodeFile(AgencyInfoActivity.LAST_IMAGE);
+        Log.v("log_tag", getStringImage(agencyBMP));
         String image = getStringImage(agencyBMP); // Decodes the bitmap into a string
 
         UploadImageRequest uploadImageRequest = new UploadImageRequest(ID, name, image, responseListener, errorListener);
@@ -362,8 +363,8 @@ class UploadImageRequest extends StringRequest {
         super(Method.POST, UPLOAD_IMAGE_URL, listener, errorListener);
         params = new HashMap<>();
         params.put(KEY_ID, id + "");
-        params.put(KEY_NAME, "name");
-        params.put(KEY_IMAGE, "image");
+        params.put(KEY_NAME, name);
+        params.put(KEY_IMAGE, image);
 
     }
 
