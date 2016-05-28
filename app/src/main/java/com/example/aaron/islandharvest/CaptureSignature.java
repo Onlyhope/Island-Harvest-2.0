@@ -197,7 +197,7 @@ public class CaptureSignature extends AppCompatActivity {
                 FileOutputStream mFileOutputStream = new FileOutputStream(myPath);
 
                 v.draw(canvas);
-                mBitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutputStream);
+                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, mFileOutputStream);
                 mFileOutputStream.flush();
                 mFileOutputStream.close();
             } catch (Exception e) {
