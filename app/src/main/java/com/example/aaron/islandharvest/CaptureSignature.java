@@ -55,10 +55,12 @@ public class CaptureSignature extends AppCompatActivity {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File directory = cw.getDir(getResources().getString(R.string.external_dir), Context.MODE_PRIVATE);
 
+        Intent intent = getIntent();
+        String callerClass = intent.getStringExtra("caller_class");
+
         prepareDirectory();
         uniqueID = getTodaysDate() + "_" + getCurrentTime() + "_" + Math.random();
-//        current = uniqueID + ".png";
-        current = "signature.png";
+        current = callerClass + "_" + uniqueID + ".png";
         myPath = new File(directory, current);
 
         mContent = (LinearLayout) findViewById(R.id.signatureLinearLayout);
