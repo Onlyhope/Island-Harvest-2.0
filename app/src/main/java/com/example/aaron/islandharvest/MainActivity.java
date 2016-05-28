@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -197,6 +196,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Retrieving string encoding of bitmap
+     *
      * @param bmp
      * @return
      */
@@ -338,29 +338,39 @@ public class MainActivity extends AppCompatActivity
         };
 
         String name = "temporaryName";
-        Bitmap agencyBMP = BitmapFactory.decodeFile(AgencyInfoActivity.LAST_IMAGE);
-        Log.v("log_tag", getStringImage(agencyBMP));
-        String image = getStringImage(agencyBMP); // Decodes the bitmap into a string
 
-        UploadImageRequest uploadImageRequest = new UploadImageRequest(ID, name, image, responseListener, errorListener);
+        Bitmap agencyBMP = BitmapFactory.decodeFile(AgencyInfoActivity.LAST_IMAGE);
+        Log.v("agency_image", getStringImage(agencyBMP));
+        String agencySig = getStringImage(agencyBMP); // Encodes the bitmap into a Base64 string
+
+        Bitmap donorBMP = BitmapFactory.decodeFile(DonorInfoActivity.LAST_IMAGE);
+        Log.v("donor_image", getStringImage(donorBMP));
+        String donorSig = getStringImage(donorBMP);
+
+        Bitmap volunteerBMP = BitmapFactory.decodeFile(FoodEntryActivity.LAST_IMAGE);
+        Log.v("volunteer_image", getStringImage(volunteerBMP));
+        String volunteerSig = getStringImage(volunteerBMP);
+
+        UploadImageRequest uploadAgencySigRequest = new UploadAgencyImageRequest(ID, name, agencySig, responseListener, errorListener);
+        UploadImageRequest uploadDonorSigRequest = new UploadDonorImageRequest(ID, name, donorSig, responseListener, errorListener);
+        UploadImageRequest uploadVolunteerSigRequest = new UploadVolunteerImageRequest(ID, name, volunteerSig, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-        queue.add(uploadImageRequest);
+        queue.add(uploadAgencySigRequest);
     }
 
 
 }
 
-class UploadImageRequest extends StringRequest {
+abstract class UploadImageRequest extends StringRequest {
 
-    private static final String UPLOAD_IMAGE_URL = "http://ihtest.comxa.com/agencySigs/AgencySignatureUpload.php";
     private Map<String, String> params;
 
     private String KEY_IMAGE = "image";
     private String KEY_NAME = "name";
     private String KEY_ID = "ID";
 
-    public UploadImageRequest(int id, String name, String image, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-        super(Method.POST, UPLOAD_IMAGE_URL, listener, errorListener);
+    public UploadImageRequest(String url, int id, String name, String image, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(Method.POST, url, listener, errorListener);
         params = new HashMap<>();
         params.put(KEY_ID, id + "");
         params.put(KEY_NAME, name);
@@ -368,7 +378,38 @@ class UploadImageRequest extends StringRequest {
 
     }
 
-    public Map<String, String> getParams() { return params; }
+    Object object = new Object();
+
+    public Map<String, String> getParams() {
+        return params;
+    }
+}
+
+class UploadAgencyImageRequest extends UploadImageRequest {
+
+    private static final String UPLOAD_AGENCY_URL = "http://ihtest.comxa.com/agencySigs/AgencySignatureUpload.php";
+
+    public UploadAgencyImageRequest(int id, String name, String image, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(UPLOAD_AGENCY_URL, id, name, image, listener, errorListener);
+    }
+}
+
+class UploadDonorImageRequest extends UploadImageRequest {
+
+    private static final String UPLOAD_DONOR_URL = "http://ihtest.comxa.com/donorSigs/DonorSignatureUpload.php";
+
+    public UploadDonorImageRequest(int id, String name, String image, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(UPLOAD_DONOR_URL, id, name, image, listener, errorListener);
+    }
+}
+
+class UploadVolunteerImageRequest extends UploadImageRequest {
+
+    private static final String UPLOAD_VOLUNTEER_URL = "http://ihtest.comxa.com/volunteerSigs/VolunteerSignatureUpload.php";
+
+    public UploadVolunteerImageRequest(int id, String name, String image, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(UPLOAD_VOLUNTEER_URL, id, name, image, listener, errorListener);
+    }
 }
 
 class UpdateStartTimeRequest extends StringRequest {

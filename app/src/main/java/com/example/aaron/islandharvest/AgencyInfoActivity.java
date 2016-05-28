@@ -52,6 +52,7 @@ public class AgencyInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent takeUserToCaptureSignature = new Intent(AgencyInfoActivity.this, CaptureSignature.class);
+                takeUserToCaptureSignature.putExtra("caller_class", "agency");
                 startActivityForResult(takeUserToCaptureSignature, SIGNATURE_ACTIVITY);
             }
         });
@@ -64,7 +65,6 @@ public class AgencyInfoActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     Bundle bundle = data.getExtras();
                     String status = bundle.getString("status");
-
                     String filePath = bundle.getString("filePath");
 
                     if (filePath != null) {
@@ -72,7 +72,6 @@ public class AgencyInfoActivity extends AppCompatActivity {
                         Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
                         agencySignatureIV.setImageBitmap(image);
                     }
-
 
                     if (status.equalsIgnoreCase("done")) {
                         Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);

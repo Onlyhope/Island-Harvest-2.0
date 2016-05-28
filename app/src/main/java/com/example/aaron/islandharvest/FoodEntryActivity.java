@@ -159,6 +159,7 @@ public class FoodEntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent takeUserToCaptureSignature = new Intent(FoodEntryActivity.this, CaptureSignature.class);
+                takeUserToCaptureSignature.putExtra("caller_class", "volunteer");
                 startActivityForResult(takeUserToCaptureSignature, SIGNATURE_ACTIVITY);
             }
         });

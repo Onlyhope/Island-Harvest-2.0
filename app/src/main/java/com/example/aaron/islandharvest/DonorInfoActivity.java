@@ -50,6 +50,7 @@ public class DonorInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent takeUserToCaptureSignature = new Intent(DonorInfoActivity.this, CaptureSignature.class);
+                takeUserToCaptureSignature.putExtra("caller_class", "donor");
                 startActivityForResult(takeUserToCaptureSignature, SIGNATURE_ACTIVITY);
             }
         });
