@@ -185,8 +185,19 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 chrmTrip.stop();
                 Toast.makeText(MainActivity.this, chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
-                uploadSignatures();
-                updateEndTime();
+
+                if (FoodEntryActivity.LAST_IMAGE == null
+                        || AgencyInfoActivity.LAST_IMAGE == null
+                        || DonorInfoActivity.LAST_IMAGE == null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Signatures were not found.")
+                            .setNegativeButton("Ok", null)
+                            .create()
+                            .show();
+                } else {
+                    uploadSignatures();
+                    updateEndTime();
+                }
             }
         });
     }
@@ -313,7 +324,7 @@ public class MainActivity extends AppCompatActivity
 
     private void uploadSignatures() {
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", true, false);
+        final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -336,23 +347,22 @@ public class MainActivity extends AppCompatActivity
 
         String name = "temporaryName";
 
+        Bitmap agencyBMP = BitmapFactory.decodeFile(AgencyInfoActivity.LAST_IMAGE);
+        String agencySig = getStringImage(agencyBMP); // Encodes the bitmap into a Base64 string
 
-//        Bitmap agencyBMP = BitmapFactory.decodeFile(AgencyInfoActivity.LAST_IMAGE);
-//        String agencySig = getStringImage(agencyBMP); // Encodes the bitmap into a Base64 string
-//
-//        Bitmap donorBMP = BitmapFactory.decodeFile(DonorInfoActivity.LAST_IMAGE);
-//        String donorSig = getStringImage(donorBMP);
-//
-//        Bitmap volunteerBMP = BitmapFactory.decodeFile(FoodEntryActivity.LAST_IMAGE);
-//        String volunteerSig = getStringImage(volunteerBMP);
-//
-//        UploadImageRequest uploadAgencySigRequest = new UploadAgencyImageRequest(ID, name, agencySig, responseListener, errorListener);
-//        UploadImageRequest uploadDonorSigRequest = new UploadDonorImageRequest(ID, name, donorSig, responseListener, errorListener);
-//        UploadImageRequest uploadVolunteerSigRequest = new UploadVolunteerImageRequest(ID, name, volunteerSig, responseListener, errorListener);
-//        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-//        queue.add(uploadAgencySigRequest);
-//        queue.add(uploadDonorSigRequest);
-//        queue.add(uploadVolunteerSigRequest);
+        Bitmap donorBMP = BitmapFactory.decodeFile(DonorInfoActivity.LAST_IMAGE);
+        String donorSig = getStringImage(donorBMP);
+
+        Bitmap volunteerBMP = BitmapFactory.decodeFile(FoodEntryActivity.LAST_IMAGE);
+        String volunteerSig = getStringImage(volunteerBMP);
+
+        UploadImageRequest uploadAgencySigRequest = new UploadAgencyImageRequest(ID, name, agencySig, responseListener, errorListener);
+        UploadImageRequest uploadDonorSigRequest = new UploadDonorImageRequest(ID, name, donorSig, responseListener, errorListener);
+        UploadImageRequest uploadVolunteerSigRequest = new UploadVolunteerImageRequest(ID, name, volunteerSig, responseListener, errorListener);
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        queue.add(uploadAgencySigRequest);
+        queue.add(uploadDonorSigRequest);
+        queue.add(uploadVolunteerSigRequest);
     }
 
 

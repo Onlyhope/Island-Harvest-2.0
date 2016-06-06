@@ -14,10 +14,8 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -60,7 +58,8 @@ public class CaptureSignature extends AppCompatActivity {
 
         prepareDirectory();
         uniqueID = getTodaysDate() + "_" + getCurrentTime() + "_" + Math.random();
-        current = callerClass + "_" + uniqueID + ".png";
+        //current = callerClass + "_" + uniqueID + ".png";
+        current = callerClass + "_signature.png";
         myPath = new File(directory, current);
 
         mContent = (LinearLayout) findViewById(R.id.signatureLinearLayout);
