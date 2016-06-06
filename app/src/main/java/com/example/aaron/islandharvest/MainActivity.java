@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity
 
     private TextView tvDonorAddr;
     private TextView tvAgencyAddr;
-    private Button btnLinkToFoodEntry;
+    private Chronometer chrmTrip;
     private Button btnStartTimeLog;
     private Button btnCompleteTimeLog;
 
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity
 
         tvDonorAddr = (TextView) findViewById(R.id.donorTextView);
         tvAgencyAddr = (TextView) findViewById(R.id.agencyTextView);
-        btnLinkToFoodEntry = (Button) findViewById(R.id.linkToFoodEntryButton);
+        chrmTrip = (Chronometer) findViewById(R.id.tripChronometer);
         btnStartTimeLog = (Button) findViewById(R.id.startTimeLogButton);
         btnCompleteTimeLog = (Button) findViewById(R.id.completeTimeLogButton);
 
@@ -169,18 +171,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initializeButtons() {
-        btnLinkToFoodEntry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent goToFoodEntry = new Intent(MainActivity.this, FoodEntryActivity.class);
-                goToFoodEntry.putExtra("foodID", foodID);
-                startActivity(goToFoodEntry);
-            }
-        });
-
         btnStartTimeLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chrmTrip.setBase(SystemClock.elapsedRealtime());
+                chrmTrip.start();
                 updateStartTime();
             }
         });
@@ -188,6 +183,8 @@ public class MainActivity extends AppCompatActivity
         btnCompleteTimeLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chrmTrip.stop();
+                Toast.makeText(MainActivity.this, chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
                 uploadSignatures();
                 updateEndTime();
             }
@@ -316,7 +313,7 @@ public class MainActivity extends AppCompatActivity
 
     private void uploadSignatures() {
 
-        final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", true, false);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -339,25 +336,23 @@ public class MainActivity extends AppCompatActivity
 
         String name = "temporaryName";
 
-        Bitmap agencyBMP = BitmapFactory.decodeFile(AgencyInfoActivity.LAST_IMAGE);
-        Log.v("agency_image", getStringImage(agencyBMP));
-        String agencySig = getStringImage(agencyBMP); // Encodes the bitmap into a Base64 string
 
-        Bitmap donorBMP = BitmapFactory.decodeFile(DonorInfoActivity.LAST_IMAGE);
-        Log.v("donor_image", getStringImage(donorBMP));
-        String donorSig = getStringImage(donorBMP);
-
-        Bitmap volunteerBMP = BitmapFactory.decodeFile(FoodEntryActivity.LAST_IMAGE);
-        Log.v("volunteer_image", getStringImage(volunteerBMP));
-        String volunteerSig = getStringImage(volunteerBMP);
-
-        UploadImageRequest uploadAgencySigRequest = new UploadAgencyImageRequest(ID, name, agencySig, responseListener, errorListener);
-        UploadImageRequest uploadDonorSigRequest = new UploadDonorImageRequest(ID, name, donorSig, responseListener, errorListener);
-        UploadImageRequest uploadVolunteerSigRequest = new UploadVolunteerImageRequest(ID, name, volunteerSig, responseListener, errorListener);
-        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-        queue.add(uploadAgencySigRequest);
-        queue.add(uploadDonorSigRequest);
-        queue.add(uploadVolunteerSigRequest);
+//        Bitmap agencyBMP = BitmapFactory.decodeFile(AgencyInfoActivity.LAST_IMAGE);
+//        String agencySig = getStringImage(agencyBMP); // Encodes the bitmap into a Base64 string
+//
+//        Bitmap donorBMP = BitmapFactory.decodeFile(DonorInfoActivity.LAST_IMAGE);
+//        String donorSig = getStringImage(donorBMP);
+//
+//        Bitmap volunteerBMP = BitmapFactory.decodeFile(FoodEntryActivity.LAST_IMAGE);
+//        String volunteerSig = getStringImage(volunteerBMP);
+//
+//        UploadImageRequest uploadAgencySigRequest = new UploadAgencyImageRequest(ID, name, agencySig, responseListener, errorListener);
+//        UploadImageRequest uploadDonorSigRequest = new UploadDonorImageRequest(ID, name, donorSig, responseListener, errorListener);
+//        UploadImageRequest uploadVolunteerSigRequest = new UploadVolunteerImageRequest(ID, name, volunteerSig, responseListener, errorListener);
+//        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+//        queue.add(uploadAgencySigRequest);
+//        queue.add(uploadDonorSigRequest);
+//        queue.add(uploadVolunteerSigRequest);
     }
 
 

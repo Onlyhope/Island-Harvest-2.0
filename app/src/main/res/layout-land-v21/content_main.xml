@@ -16,42 +16,42 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp">
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <ScrollView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="100dp"
-            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryLight"
+            android:layout_marginBottom="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/colorPrimaryLight">
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/donorTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/colorPrimaryLight"
                 android:padding="15dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="15sp" />
+
         </ScrollView>
 
         <ScrollView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="100dp"
-            android:background="@color/colorPrimaryLight"
-            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp">
+            android:background="@color/colorPrimaryLight">
 
             <TextView
                 android:id="@+id/agencyTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/colorPrimaryLight"
                 android:padding="15dp"
                 android:textColor="@color/colorPrimaryDark"
@@ -62,15 +62,14 @@
 
     <RelativeLayout
         android:id="@+id/relativeLayout5"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/startTimeLogButton"
-            android:layout_margin="15dp"
+            android:layout_height="wrap_content"
             android:gravity="center">
 
             <Chronometer
@@ -79,33 +78,42 @@
                 android:layout_height="wrap_content"
                 android:padding="20dp"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="70sp" />
+                android:textSize="50sp" />
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/startTimeLogButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/completeTimeLogButton"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@color/colorPrimaryLight"
-            android:elevation="5dp"
-            android:text="@string/start_button"
-            android:textColor="@color/colorPrimaryDark" />
-
-        <Button
-            android:id="@+id/completeTimeLogButton"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@color/colorPrimaryLight"
-            android:elevation="5dp"
-            android:text="@string/complete_button"
-            android:textColor="@color/colorPrimaryDark" />
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/startTimeLogButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryLight"
+                android:elevation="5dp"
+                android:text="@string/start_button"
+                android:textColor="@color/colorPrimaryDark" />
+
+            <Button
+                android:id="@+id/completeTimeLogButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_toRightOf="@+id/startTimeLogButton"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryLight"
+                android:elevation="5dp"
+                android:text="@string/complete_button"
+                android:textColor="@color/colorPrimaryDark" />
+
+        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

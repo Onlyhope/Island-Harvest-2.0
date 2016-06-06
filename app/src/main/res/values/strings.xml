@@ -57,5 +57,6 @@
     <string name="title_activity_agency_info">AgencyInfoActivity</string>
     <string name="title_activity_donor_info">DonorInfoActivity</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_get_signatures">GetSignaturesActivity</string>
 
 </resources>
