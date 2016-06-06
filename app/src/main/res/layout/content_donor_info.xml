@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_login"
+    android:background="@color/white"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -20,11 +20,12 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@color/white"
+        android:background="@color/colorPrimaryLight"
         android:padding="10dp"
         android:scrollbars="vertical"
         android:text="Forrest Ray\n191-103 Integer Rd.\nCorona New Mexico 08219\n(404) 960-3807"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"/>
 
     <ImageView
         android:id="@+id/donorSignatureImageButton"
@@ -35,6 +36,6 @@
         android:layout_marginTop="16dp"
         android:layout_below="@+id/donorAddressTextView"
         android:padding="10dp"
-        android:background="@color/white" />
+        android:background="@color/colorPrimaryLight" />
 
 </RelativeLayout>
