@@ -26,6 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:orientation="horizontal"
             android:background="@color/colorPrimaryLight"
             android:padding="5dp"
@@ -56,6 +58,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:background="@color/colorPrimaryLight"
@@ -79,12 +83,25 @@
                 android:id="@+id/signatureImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="65dp"
+                android:layout_marginBottom="125dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:background="@color/colorPrimaryLight" />
+
+            <Button
+                android:id="@+id/viewSubmissionButotn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_above="@+id/submitInfoButton"
+                android:background="@color/colorPrimaryLight"
+                android:padding="5dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/view_submission"
+                android:textColor="@color/colorPrimaryDark"/>
 
             <Button
                 android:id="@+id/submitInfoButton"

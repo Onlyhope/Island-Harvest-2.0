@@ -2,6 +2,7 @@ package com.example.aaron.islandharvest;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.util.StringBuilderPrinter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,20 +40,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
 public class FoodEntryActivity extends AppCompatActivity {
 
-    public static String LAST_IMAGE;
+    public static String LAST_IMAGE; // TODO eliminate dependency of static variables
+    public static ArrayList<String> submissionInfo = new ArrayList<>();
 
     private EditText etFoodAmount;
     private Spinner spinFoodDescrip;
     private Spinner spinFoodType;
     private ImageView signatureIV;
     private Button btnSubmitFood;
-
-    private int ID;
+    private Button btnViewSubmission;
 
     private ArrayAdapter<CharSequence> foodTypeAdapter;
     private ArrayAdapter<CharSequence> foodDescripAdapter;
@@ -85,6 +88,7 @@ public class FoodEntryActivity extends AppCompatActivity {
 
         etFoodAmount = (EditText) findViewById(R.id.foodAmountEditText);
         btnSubmitFood = (Button) findViewById(R.id.submitInfoButton);
+        btnViewSubmission = (Button) findViewById(R.id.viewSubmissionButotn);
         signatureIV = (ImageView) findViewById(R.id.signatureImageView);
 
         if (LAST_IMAGE != null) {
@@ -92,18 +96,15 @@ public class FoodEntryActivity extends AppCompatActivity {
             signatureIV.setImageBitmap(image);
         }
 
-        ID = getIntent().getExtras().getInt("foodID");
-
-        Toast.makeText(this, "foodID: " + ID, Toast.LENGTH_LONG).show();
-
         initializeSpinner();
         initializeOnClickListeners();
-
-        fetchFoodInfo();
     }
 
 
-    // Initializes the foodType Spinner
+
+    /**
+     * Initializes the spinners
+     */
     private void initializeSpinner() {
         spinFoodType = (Spinner) findViewById(R.id.foodTypeSpinner);
 
@@ -144,7 +145,30 @@ public class FoodEntryActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Initializes the onClickListeners
+     */
     private void initializeOnClickListeners() {
+        btnViewSubmission.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+                String submission = getSubmissionInfo();
+                builder.setMessage(submission)
+                        .setNegativeButton("Reset", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                submissionInfo.clear();
+                                Toast.makeText(FoodEntryActivity.this, "Submission Info resetted", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setPositiveButton("Ok", null)
+                        .create()
+                        .show();
+            }
+        });
+
         btnSubmitFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,7 +180,7 @@ public class FoodEntryActivity extends AppCompatActivity {
                             .show();
                     return;
                 }
-                editFoodDescrip(v);
+                addDonationEntry();
             }
         });
 
@@ -170,6 +194,12 @@ public class FoodEntryActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Result from SignatureActivity
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -198,7 +228,49 @@ public class FoodEntryActivity extends AppCompatActivity {
         }
     }
 
-    public void editFoodDescrip(View view) {
+    /**
+     * Adds an entry on to the submissionInfo ArrayList
+     */
+    private void addDonationEntry() {
+        String foodDescrip = spinFoodDescrip.getSelectedItem().toString();
+        String foodType = spinFoodType.getSelectedItem().toString();
+        String foodAmount = etFoodAmount.getText().toString().trim();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(foodDescrip);
+        sb.append(", ");
+        sb.append(foodType);
+        sb.append(", ");
+        sb.append(foodAmount);
+        sb.append(" LB");
+
+        submissionInfo.add(sb.toString());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+        builder.setMessage("Added")
+                .setNegativeButton("Ok", null)
+                .create()
+                .show();
+    }
+
+    /**
+     * Returns the submissionInfo ArrayList as a string.
+     * Use for inserting into SQL
+     * @return
+     */
+    private String getSubmissionInfo() {
+        StringBuilder sb = new StringBuilder();
+        for (String entry : submissionInfo) {
+            sb.append(entry);
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Method is not used.
+     */
+    public void editFoodDescrip() {
         final String foodDescrip = spinFoodDescrip.getSelectedItem().toString();
         final String foodType = spinFoodType.getSelectedItem().toString();
         final double foodAmount = Double.parseDouble(etFoodAmount.getText().toString().trim());
@@ -224,13 +296,18 @@ public class FoodEntryActivity extends AppCompatActivity {
 
         Toast.makeText(FoodEntryActivity.this, "Submitting Information...", Toast.LENGTH_SHORT).show();
 
-        FoodEntryRequest foodEntryRequest = new FoodEntryRequest(ID, foodDescrip, foodType, foodAmount, responseListener, errorListener);
-        RequestQueue queue = Volley.newRequestQueue(FoodEntryActivity.this);
-        queue.add(foodEntryRequest);
+        int ID = 0; // placeHolder variable, for method not used
+
+//        FoodEntryRequest foodEntryRequest = new FoodEntryRequest(ID, foodDescrip, foodType, foodAmount, responseListener, errorListener);
+//        RequestQueue queue = Volley.newRequestQueue(FoodEntryActivity.this);
+//        queue.add(foodEntryRequest);
     }
 
     // Server Code
 
+    /**
+     * Method is not used anymore
+     */
     public void fetchFoodInfo() {
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -328,6 +405,8 @@ public class FoodEntryActivity extends AppCompatActivity {
                 Toast.makeText(FoodEntryActivity.this, error.toString(), Toast.LENGTH_LONG).show();
             }
         };
+
+        int ID = 0; // placeholder variable for not used method
 
         FetchFoodRequest fetchFoodRequest = new FetchFoodRequest(ID, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(FoodEntryActivity.this);

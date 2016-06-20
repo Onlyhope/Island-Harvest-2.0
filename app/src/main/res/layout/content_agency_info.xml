@@ -23,9 +23,9 @@
         android:background="@color/colorPrimaryLight"
         android:padding="10dp"
         android:scrollbars="vertical"
-        android:text="Celeste Slater \n606-3727 Ullamcorper. Street\nRoseville NH 11523\n(786) 713-8616"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"/>
+
 
     <ImageView
         android:id="@+id/agencySignatureImageButton"

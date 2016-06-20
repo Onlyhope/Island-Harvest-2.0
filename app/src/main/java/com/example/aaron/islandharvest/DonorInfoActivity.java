@@ -37,6 +37,9 @@ public class DonorInfoActivity extends AppCompatActivity {
         donorAddrTV = (TextView) findViewById(R.id.donorAddressTextView);
         donorSignatureIV = (ImageView) findViewById(R.id.donorSignatureImageButton);
 
+        String donorAddr = getIntent().getStringExtra("donorInfo");
+        donorAddrTV.setText(donorAddr);
+
         if (LAST_IMAGE != null) {
             Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
             donorSignatureIV.setImageBitmap(image);

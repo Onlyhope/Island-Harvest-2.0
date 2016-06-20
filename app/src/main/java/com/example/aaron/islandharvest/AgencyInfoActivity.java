@@ -39,6 +39,9 @@ public class AgencyInfoActivity extends AppCompatActivity {
         agencyAddrTV = (TextView) findViewById(R.id.agencyAddressTextView);
         agencySignatureIV = (ImageView) findViewById(R.id.agencySignatureImageButton);
 
+        String agencyAddr = getIntent().getStringExtra("agencyInfo");
+        agencyAddrTV.setText(agencyAddr);
+
         if (LAST_IMAGE != null) {
             Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
             agencySignatureIV.setImageBitmap(image);

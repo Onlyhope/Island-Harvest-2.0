@@ -23,7 +23,6 @@
         android:background="@color/colorPrimaryLight"
         android:padding="10dp"
         android:scrollbars="vertical"
-        android:text="Forrest Ray\n191-103 Integer Rd.\nCorona New Mexico 08219\n(404) 960-3807"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"/>
 

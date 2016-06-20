@@ -58,5 +58,6 @@
     <string name="title_activity_donor_info">DonorInfoActivity</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_get_signatures">GetSignaturesActivity</string>
+    <string name="view_submission">View Submission</string>
 
 </resources>

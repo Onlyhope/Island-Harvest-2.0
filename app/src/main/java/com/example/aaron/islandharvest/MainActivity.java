@@ -43,11 +43,11 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private int ID;
-    private int userID;
-    private int agencyID;
-    private int donorID;
-    private int foodID;
+    private static int routeID;
+    private static int userID;
+    private static int agencyID;
+    private static int donorID;
+    private static int foodID;
 
     private TextView tvDonorAddr;
     private TextView tvAgencyAddr;
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "ID: " + ID + " " + userID + " " + agencyID + " " + donorID + " " + foodID, Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "routeID: " + routeID + " " + userID + " " + agencyID + " " + donorID + " " + foodID, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-        ID = Integer.parseInt(sharedPref.getString("routeID", ""));
+        routeID = Integer.parseInt(sharedPref.getString("routeID", ""));
 
-        Toast.makeText(this, "routeID: " + ID, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "routeID: " + routeID, Toast.LENGTH_LONG).show();
 
         tvDonorAddr = (TextView) findViewById(R.id.donorTextView);
         tvAgencyAddr = (TextView) findViewById(R.id.agencyTextView);
@@ -152,17 +152,15 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_donor) {
             Intent goToDonorInfo = new Intent(MainActivity.this, DonorInfoActivity.class);
             goToDonorInfo.putExtra("donorID", donorID);
+            goToDonorInfo.putExtra("donorInfo", tvDonorAddr.getText().toString());
             startActivity(goToDonorInfo);
         } else if (id == R.id.nav_agency) {
             Intent goToAgencyInfo = new Intent(MainActivity.this, AgencyInfoActivity.class);
             goToAgencyInfo.putExtra("agencyID", agencyID);
+            goToAgencyInfo.putExtra("agencyInfo", tvAgencyAddr.getText().toString());
             startActivity(goToAgencyInfo);
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_reset) {
+            resetApp();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -200,6 +198,11 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    private void resetApp() {
+        chrmTrip.stop();
+        chrmTrip.setBase(SystemClock.elapsedRealtime());
     }
 
     /**
@@ -268,7 +271,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        FetchRouteDataRequest fetchRouteDataRequest = new FetchRouteDataRequest(ID, responseListener, errorListener);
+        FetchRouteDataRequest fetchRouteDataRequest = new FetchRouteDataRequest(routeID, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(fetchRouteDataRequest);
     }
@@ -293,7 +296,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        UpdateStartTimeRequest updateStartTimeRequest = new UpdateStartTimeRequest(ID, responseListener, errorListener);
+        UpdateStartTimeRequest updateStartTimeRequest = new UpdateStartTimeRequest(routeID, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(updateStartTimeRequest);
     }
@@ -317,7 +320,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        UpdateEndTimeRequest updateEndTimeRequest = new UpdateEndTimeRequest(ID, responseListener, errorListener);
+        UpdateEndTimeRequest updateEndTimeRequest = new UpdateEndTimeRequest(routeID, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(updateEndTimeRequest);
     }
@@ -330,9 +333,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(String response) {
                 // Dismissing the progress dialog
-                loading.dismiss();
                 // Showing toast message of the response
-                Log.v("log_tag", response);
+                Log.v("log_error", response);
                 Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
             }
         };
@@ -356,13 +358,26 @@ public class MainActivity extends AppCompatActivity
         Bitmap volunteerBMP = BitmapFactory.decodeFile(FoodEntryActivity.LAST_IMAGE);
         String volunteerSig = getStringImage(volunteerBMP);
 
-        UploadImageRequest uploadAgencySigRequest = new UploadAgencyImageRequest(ID, name, agencySig, responseListener, errorListener);
-        UploadImageRequest uploadDonorSigRequest = new UploadDonorImageRequest(ID, name, donorSig, responseListener, errorListener);
-        UploadImageRequest uploadVolunteerSigRequest = new UploadVolunteerImageRequest(ID, name, volunteerSig, responseListener, errorListener);
+        UploadImageRequest uploadAgencySigRequest = new UploadAgencyImageRequest(routeID, name, agencySig, responseListener, errorListener);
+        UploadImageRequest uploadDonorSigRequest = new UploadDonorImageRequest(routeID, name, donorSig, responseListener, errorListener);
+        UploadImageRequest uploadVolunteerSigRequest = new UploadVolunteerImageRequest(routeID, name, volunteerSig, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(uploadAgencySigRequest);
         queue.add(uploadDonorSigRequest);
         queue.add(uploadVolunteerSigRequest);
+
+        for ( String entry : FoodEntryActivity.submissionInfo) {
+            entry.replaceAll(" ", "");
+            String[] params = entry.split(",", 3);
+            Log.v("log_tag", params.toString());
+            FoodEntryRequest foodEntryRequest = new FoodEntryRequest(routeID, params[0], params[1], params[2], responseListener, errorListener);
+            queue.add(foodEntryRequest);
+        }
+
+        FoodEntryActivity.submissionInfo.clear();
+        resetApp();
+
+        loading.dismiss();
     }
 
 
@@ -384,8 +399,6 @@ abstract class UploadImageRequest extends StringRequest {
         params.put(KEY_IMAGE, image);
 
     }
-
-    Object object = new Object();
 
     public Map<String, String> getParams() {
         return params;
