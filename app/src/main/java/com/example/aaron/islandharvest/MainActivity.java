@@ -99,18 +99,13 @@ public class MainActivity extends AppCompatActivity
         btnStartTimeLog = (Button) findViewById(R.id.startTimeLogButton);
         btnCompleteTimeLog = (Button) findViewById(R.id.completeTimeLogButton);
 
+        chrmTrip.setBase(SystemClock.elapsedRealtime());
+
         initializeButtons();
 
         // Retrieve RouteData from MySQL database
         fetchRouteInfo();
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        isChrmMeterRunning = false;
     }
 
     @Override
