@@ -43,6 +43,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+
     private static int routeID;
     private static int userID;
     private static int agencyID;
@@ -55,7 +56,11 @@ public class MainActivity extends AppCompatActivity
     private Button btnStartTimeLog;
     private Button btnCompleteTimeLog;
 
+    private static final String START_TIME = "start_time";
     public static final String USER_PREFERENCES = "userPreferences";
+
+    private static boolean isChrmMeterRunning = false;
+    private static long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +104,26 @@ public class MainActivity extends AppCompatActivity
         // Retrieve RouteData from MySQL database
         fetchRouteInfo();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        isChrmMeterRunning = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+
+        if (isChrmMeterRunning) {
+            Toast.makeText(MainActivity.this, startTime + "", Toast.LENGTH_LONG).show();
+            chrmTrip.setBase(startTime);
+            chrmTrip.start();
+        }
     }
 
     @Override
@@ -168,12 +193,24 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Initializes onClickListeners
+     */
     private void initializeButtons() {
         btnStartTimeLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chrmTrip.setBase(SystemClock.elapsedRealtime());
+                SharedPreferences sharedPreferences;
+                sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                Toast.makeText(MainActivity.this, SystemClock.elapsedRealtime() + "", Toast.LENGTH_LONG).show();
+                startTime = SystemClock.elapsedRealtime();
+                chrmTrip.setBase(startTime);
+                editor.putLong(START_TIME, startTime);
+
                 chrmTrip.start();
+                isChrmMeterRunning = true;
                 updateStartTime();
             }
         });
@@ -182,6 +219,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 chrmTrip.stop();
+                isChrmMeterRunning = false;
                 Toast.makeText(MainActivity.this, chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
 
                 if (FoodEntryActivity.LAST_IMAGE == null
@@ -202,7 +240,10 @@ public class MainActivity extends AppCompatActivity
 
     private void resetApp() {
         chrmTrip.stop();
-        chrmTrip.setBase(SystemClock.elapsedRealtime());
+        isChrmMeterRunning = false;
+        startTime = SystemClock.elapsedRealtime();
+        chrmTrip.setBase(startTime);
+
     }
 
     /**
@@ -324,6 +365,7 @@ public class MainActivity extends AppCompatActivity
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(updateEndTimeRequest);
     }
+
 
     private void uploadSignatures() {
 
