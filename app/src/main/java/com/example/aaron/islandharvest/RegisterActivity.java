@@ -1,12 +1,9 @@
 package com.example.aaron.islandharvest;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,14 +19,13 @@ import org.json.JSONObject;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private static final String USER_PREFERENCES = "userPreferences";
     // Layout Components
     private Button btnRegister;
     private Button btnLinkToLogin;
     private EditText inputFullName;
     private EditText inputEmail;
     private EditText inputPassword;
-
-    private static final String USER_PREFERENCES = "userPreferences";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

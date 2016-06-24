@@ -14,9 +14,8 @@ import android.widget.Toast;
 
 public class DonorInfoActivity extends AppCompatActivity {
 
-    public static String LAST_IMAGE;
-
     private static final int SIGNATURE_ACTIVITY = 1;
+    public static String LAST_IMAGE;
     private TextView donorAddrTV;
     private ImageView donorSignatureIV;
 
@@ -49,7 +48,7 @@ public class DonorInfoActivity extends AppCompatActivity {
     }
 
     private void initializeOnClickListeners() {
-        donorSignatureIV.setOnClickListener(new View.OnClickListener(){
+        donorSignatureIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent takeUserToCaptureSignature = new Intent(DonorInfoActivity.this, CaptureSignature.class);

@@ -30,16 +30,15 @@ import java.util.Calendar;
  */
 public class CaptureSignature extends AppCompatActivity {
 
-    LinearLayout mContent;
-    signature mSignature;
-    Button mClear, mGetSign, mCancel;
     public static String tempDir;
     public int count = -1;
     public String current = null;
-    private Bitmap mBitmap;
+    LinearLayout mContent;
+    signature mSignature;
+    Button mClear, mGetSign, mCancel;
     View mView;
     File myPath;
-
+    private Bitmap mBitmap;
     private String uniqueID;
 
 
@@ -170,12 +169,11 @@ public class CaptureSignature extends AppCompatActivity {
 
         private static final float STROKE_WIDTH = 5f;
         private static final float HALF_STROKE_WIDTH = STROKE_WIDTH / 2;
+        private final RectF dirtyRect = new RectF();
         private Paint paint = new Paint();
         private Path path = new Path();
-
         private float lastTouchX;
         private float lastTouchY;
-        private final RectF dirtyRect = new RectF();
 
         public signature(Context context, AttributeSet attrs) {
             super(context, attrs);

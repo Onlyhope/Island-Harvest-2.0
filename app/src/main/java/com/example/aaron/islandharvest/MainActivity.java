@@ -9,9 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -44,23 +42,20 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
+    public static final String USER_PREFERENCES = "userPreferences";
+    private static final String START_TIME = "start_time";
     private static int routeID;
     private static int userID;
     private static int agencyID;
     private static int donorID;
     private static int foodID;
-
+    private static boolean isChrmMeterRunning = false;
+    private static long startTime;
     private TextView tvDonorAddr;
     private TextView tvAgencyAddr;
     private Chronometer chrmTrip;
     private Button btnStartTimeLog;
     private Button btnCompleteTimeLog;
-
-    private static final String START_TIME = "start_time";
-    public static final String USER_PREFERENCES = "userPreferences";
-
-    private static boolean isChrmMeterRunning = false;
-    private static long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +63,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "routeID: " + routeID + " " + userID + " " + agencyID + " " + donorID + " " + foodID, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -199,7 +184,6 @@ public class MainActivity extends AppCompatActivity
                 sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                Toast.makeText(MainActivity.this, SystemClock.elapsedRealtime() + "", Toast.LENGTH_LONG).show();
                 startTime = SystemClock.elapsedRealtime();
                 chrmTrip.setBase(startTime);
                 editor.putLong(START_TIME, startTime);
@@ -215,7 +199,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 chrmTrip.stop();
                 isChrmMeterRunning = false;
-                Toast.makeText(MainActivity.this, chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Trip took: " + chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
 
                 if (FoodEntryActivity.LAST_IMAGE == null
                         || AgencyInfoActivity.LAST_IMAGE == null
@@ -257,6 +241,9 @@ public class MainActivity extends AppCompatActivity
 
     // Server Code
 
+    /**
+     * Fetches the IDs of the agency, donor, and volunteer assigned to the route.
+     */
     public void fetchRouteInfo() {
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -312,6 +299,9 @@ public class MainActivity extends AppCompatActivity
         queue.add(fetchRouteDataRequest);
     }
 
+    /**
+     * Logged the start time as a timestamp in the database.
+     */
     private void updateStartTime() {
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -337,6 +327,9 @@ public class MainActivity extends AppCompatActivity
         queue.add(updateStartTimeRequest);
     }
 
+    /**
+     * Logged the end time as a timestamp in the database.
+     */
     private void updateEndTime() {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -361,7 +354,9 @@ public class MainActivity extends AppCompatActivity
         queue.add(updateEndTimeRequest);
     }
 
-
+    /**
+     * Uploads the signatures and completes the trips.
+     */
     private void uploadSignatures() {
 
         final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
@@ -372,7 +367,6 @@ public class MainActivity extends AppCompatActivity
                 // Dismissing the progress dialog
                 // Showing toast message of the response
                 Log.v("log_error", response);
-                Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
             }
         };
 
@@ -403,7 +397,7 @@ public class MainActivity extends AppCompatActivity
         queue.add(uploadDonorSigRequest);
         queue.add(uploadVolunteerSigRequest);
 
-        for ( String entry : FoodEntryActivity.submissionInfo) {
+        for (String entry : FoodEntryActivity.submissionInfo) {
             entry.replaceAll(" ", "");
             String[] params = entry.split(",", 3);
             Log.v("log_tag", params.toString());

@@ -1,23 +1,16 @@
 package com.example.aaron.islandharvest;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
-import android.util.Log;
-import android.util.StringBuilderPrinter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,42 +18,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Map;
 
 public class FoodEntryActivity extends AppCompatActivity {
 
+    private static final int SIGNATURE_ACTIVITY = 1;
+    private static final int OTHER_ACTIVITY = 2;
     public static String LAST_IMAGE; // TODO eliminate dependency of static variables
     public static ArrayList<String> submissionInfo = new ArrayList<>();
-
     private EditText etFoodAmount;
     private Spinner spinFoodDescrip;
     private Spinner spinFoodType;
     private ImageView signatureIV;
     private Button btnSubmitFood;
     private Button btnViewSubmission;
-
     private ArrayAdapter<CharSequence> foodTypeAdapter;
     private ArrayAdapter<CharSequence> foodDescripAdapter;
-    private static final int SIGNATURE_ACTIVITY = 1;
-    private static final int OTHER_ACTIVITY = 2;
-
     private String UPLOAD_URL = "http://ihtest.comxa.com/volunteerSigs/SignatureUpload.php";
 
     private String KEY_IMAGE = "image";
@@ -101,7 +84,6 @@ public class FoodEntryActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * Initializes the spinners
      */
@@ -116,7 +98,7 @@ public class FoodEntryActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 //                ((TextView) parent.getChildAt(position)).setTextColor(Color.rgb(104,159,56));
-                Toast.makeText(parent.getContext(), parent.getSelectedItem().toString() + " selected", Toast.LENGTH_LONG).show();
+                Toast.makeText(parent.getContext(), parent.getSelectedItem().toString() + " selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -135,7 +117,7 @@ public class FoodEntryActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 //                ((TextView) parent.getChildAt(position)).setTextColor(Color.rgb(104,159,56));
-                Toast.makeText(parent.getContext(), parent.getSelectedItem().toString() + " selected", Toast.LENGTH_LONG).show();
+                Toast.makeText(parent.getContext(), parent.getSelectedItem().toString() + " selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -150,7 +132,7 @@ public class FoodEntryActivity extends AppCompatActivity {
      * Initializes the onClickListeners
      */
     private void initializeOnClickListeners() {
-        btnViewSubmission.setOnClickListener(new View.OnClickListener(){
+        btnViewSubmission.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
@@ -196,6 +178,7 @@ public class FoodEntryActivity extends AppCompatActivity {
 
     /**
      * Result from SignatureActivity
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -224,7 +207,6 @@ public class FoodEntryActivity extends AppCompatActivity {
             case OTHER_ACTIVITY:
                 break;
             default:
-                Toast.makeText(FoodEntryActivity.this, "Defaulted onActivityResult", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -256,6 +238,7 @@ public class FoodEntryActivity extends AppCompatActivity {
     /**
      * Returns the submissionInfo ArrayList as a string.
      * Use for inserting into SQL
+     *
      * @return
      */
     private String getSubmissionInfo() {
@@ -411,55 +394,6 @@ public class FoodEntryActivity extends AppCompatActivity {
         FetchFoodRequest fetchFoodRequest = new FetchFoodRequest(ID, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(FoodEntryActivity.this);
         queue.add(fetchFoodRequest);
-    }
-
-    // Server code for uploading images
-
-    private void uploadImage() {
-        // Showing the progress diaglog
-        final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
-                new Response.Listener<String>() {
-
-                    @Override
-                    public void onResponse(String response) {
-                        // Dismissing the progress dialog
-                        loading.dismiss();
-                        // Showing toast message of the response
-                        Toast.makeText(FoodEntryActivity.this, response, Toast.LENGTH_LONG).show();
-                    }
-                },
-                new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        loading.dismiss();
-                        Toast.makeText(FoodEntryActivity.this, error.getMessage().toString(), Toast.LENGTH_LONG).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                // Converting Bitmap to String
-                String image = ""; //getStringImage(signatureIV.getDrawingCache()); // getStringImage(bitmap);
-
-                // Getting Image Name
-                String name = "temporaryName"; //editTextName.getText().toString().trim();
-
-                // Creating Parameters
-                Map<String, String> params = new Hashtable<String, String>();
-
-                // Adding parameters
-                params.put(KEY_IMAGE, image);
-                params.put(KEY_NAME, name);
-
-                // Returning parameters
-                return params;
-            }
-        };
-
-        // Creating a Request Queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
     }
 }
 

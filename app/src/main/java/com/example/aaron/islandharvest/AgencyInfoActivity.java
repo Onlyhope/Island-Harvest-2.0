@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,9 +14,8 @@ import android.widget.Toast;
 
 public class AgencyInfoActivity extends AppCompatActivity {
 
-    public static String LAST_IMAGE;
-
     private static final int SIGNATURE_ACTIVITY = 1;
+    public static String LAST_IMAGE;
     private TextView agencyAddrTV;
     private ImageView agencySignatureIV;
 
@@ -51,7 +48,7 @@ public class AgencyInfoActivity extends AppCompatActivity {
     }
 
     private void initializeOnClickListeners() {
-        agencySignatureIV.setOnClickListener(new View.OnClickListener(){
+        agencySignatureIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent takeUserToCaptureSignature = new Intent(AgencyInfoActivity.this, CaptureSignature.class);
