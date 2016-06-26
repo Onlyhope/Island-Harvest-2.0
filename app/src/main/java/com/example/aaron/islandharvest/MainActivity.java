@@ -3,6 +3,7 @@ package com.example.aaron.islandharvest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -49,13 +50,94 @@ public class MainActivity extends AppCompatActivity
     private static int agencyID;
     private static int donorID;
     private static int foodID;
-    private static boolean isChrmMeterRunning = false;
     private static long startTime;
+    private static boolean btnStartTimeLogIsEnabled = true;
+    private static boolean btnCompleteTimeLogIsEnabled = true;
+    private static boolean isChrmMeterRunning = false;
     private TextView tvDonorAddr;
     private TextView tvAgencyAddr;
     private Chronometer chrmTrip;
     private Button btnStartTimeLog;
     private Button btnCompleteTimeLog;
+    private View.OnClickListener disableOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Do you want restart the application?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            reEnableApp();
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .create()
+                    .show();
+        }
+    };
+    private View.OnClickListener completeTimeOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            chrmTrip.stop();
+            isChrmMeterRunning = false;
+            Toast.makeText(MainActivity.this, "Trip took: " + chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
+
+            if (FoodEntryActivity.LAST_IMAGE == null
+                    || AgencyInfoActivity.LAST_IMAGE == null
+                    || DonorInfoActivity.LAST_IMAGE == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Signatures were not found.")
+                        .setNegativeButton("Ok", null)
+                        .create()
+                        .show();
+            } else if (FoodEntryActivity.submissionInfo.isEmpty()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("You do not have any submissions")
+                        .setNegativeButton("Ok", null)
+                        .create()
+                        .show();
+            } else {
+                uploadSignatures();
+                updateEndTime();
+            }
+        }
+    };
+    private View.OnClickListener startTimeOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            SharedPreferences sharedPreferences;
+            sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            startTime = SystemClock.elapsedRealtime();
+            chrmTrip.setBase(startTime);
+            editor.putLong(START_TIME, startTime);
+
+            chrmTrip.start();
+            isChrmMeterRunning = true;
+            updateStartTime();
+
+            btnStartTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            btnStartTimeLog.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+            btnStartTimeLog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Do you want to reset route?")
+                            .setNegativeButton("No", null)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    resetApp();
+                                }
+                            })
+                            .create()
+                            .show();
+                }
+            });
+            btnStartTimeLogIsEnabled = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +168,6 @@ public class MainActivity extends AppCompatActivity
 
         chrmTrip.setBase(SystemClock.elapsedRealtime());
 
-        initializeButtons();
-
         // Retrieve RouteData from MySQL database
         fetchRouteInfo();
 
@@ -100,9 +180,28 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
 
         if (isChrmMeterRunning) {
-            Toast.makeText(MainActivity.this, startTime + "", Toast.LENGTH_LONG).show();
             chrmTrip.setBase(startTime);
             chrmTrip.start();
+        }
+
+        if (btnStartTimeLogIsEnabled) {
+            btnStartTimeLog.setOnClickListener(startTimeOnClickListener);
+            btnStartTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+            btnStartTimeLog.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        } else {
+            btnStartTimeLog.setOnClickListener(disableOnClickListener);
+            btnStartTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            btnStartTimeLog.setTextColor(getResources().getColor(R.color.white));
+        }
+
+        if (btnCompleteTimeLogIsEnabled) {
+            btnCompleteTimeLog.setOnClickListener(completeTimeOnClickListener);
+            btnCompleteTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+            btnCompleteTimeLog.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        } else {
+            btnCompleteTimeLog.setOnClickListener(disableOnClickListener);
+            btnCompleteTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            btnCompleteTimeLog.setTextColor(getResources().getColor(R.color.white));
         }
     }
 
@@ -173,55 +272,47 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    /**
-     * Initializes onClickListeners
-     */
-    private void initializeButtons() {
-        btnStartTimeLog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sharedPreferences;
-                sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                startTime = SystemClock.elapsedRealtime();
-                chrmTrip.setBase(startTime);
-                editor.putLong(START_TIME, startTime);
-
-                chrmTrip.start();
-                isChrmMeterRunning = true;
-                updateStartTime();
-            }
-        });
-
-        btnCompleteTimeLog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chrmTrip.stop();
-                isChrmMeterRunning = false;
-                Toast.makeText(MainActivity.this, "Trip took: " + chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
-
-                if (FoodEntryActivity.LAST_IMAGE == null
-                        || AgencyInfoActivity.LAST_IMAGE == null
-                        || DonorInfoActivity.LAST_IMAGE == null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage("Signatures were not found.")
-                            .setNegativeButton("Ok", null)
-                            .create()
-                            .show();
-                } else {
-                    uploadSignatures();
-                    updateEndTime();
-                }
-            }
-        });
+    private void resetApp() {
+        disableApp();
+        reEnableApp();
     }
 
-    private void resetApp() {
+    private void disableApp() {
         chrmTrip.stop();
         isChrmMeterRunning = false;
+        btnStartTimeLog.setOnClickListener(disableOnClickListener);
+        btnStartTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        btnStartTimeLog.setTextColor(getResources().getColor(R.color.white));
+        btnStartTimeLogIsEnabled = false;
+        btnCompleteTimeLog.setOnClickListener(disableOnClickListener);
+        btnCompleteTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        btnCompleteTimeLog.setTextColor(getResources().getColor(R.color.white));
+        btnCompleteTimeLogIsEnabled = false;
+
+    }
+
+    /**
+     * Stops the timer and resets it.
+     */
+    private void reEnableApp() {
+
         startTime = SystemClock.elapsedRealtime();
         chrmTrip.setBase(startTime);
+
+        AgencyInfoActivity.LAST_IMAGE = null;
+        DonorInfoActivity.LAST_IMAGE = null;
+        FoodEntryActivity.LAST_IMAGE = null;
+
+        FoodEntryActivity.submissionInfo.clear();
+
+        btnStartTimeLog.setOnClickListener(startTimeOnClickListener);
+        btnStartTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+        btnStartTimeLog.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        btnStartTimeLogIsEnabled = true;
+        btnCompleteTimeLog.setOnClickListener(completeTimeOnClickListener);
+        btnCompleteTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+        btnCompleteTimeLog.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        btnCompleteTimeLogIsEnabled = true;
 
     }
 
@@ -307,11 +398,7 @@ public class MainActivity extends AppCompatActivity
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage("Time logged")
-                        .setNegativeButton("Ok", null)
-                        .create()
-                        .show();
+
             }
         };
 
@@ -405,8 +492,7 @@ public class MainActivity extends AppCompatActivity
             queue.add(foodEntryRequest);
         }
 
-        FoodEntryActivity.submissionInfo.clear();
-        resetApp();
+        disableApp();
 
         loading.dismiss();
     }
