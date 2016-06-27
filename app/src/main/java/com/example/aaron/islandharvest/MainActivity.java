@@ -59,28 +59,12 @@ public class MainActivity extends AppCompatActivity
     private Chronometer chrmTrip;
     private Button btnStartTimeLog;
     private Button btnCompleteTimeLog;
-    private View.OnClickListener disableOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setMessage("Do you want restart the application?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            reEnableApp();
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .create()
-                    .show();
-        }
-    };
     private View.OnClickListener completeTimeOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             chrmTrip.stop();
             isChrmMeterRunning = false;
-            Toast.makeText(MainActivity.this, "Trip took: " + chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Trip took " + chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
 
             if (FoodEntryActivity.LAST_IMAGE == null
                     || AgencyInfoActivity.LAST_IMAGE == null
@@ -138,6 +122,22 @@ public class MainActivity extends AppCompatActivity
             btnStartTimeLogIsEnabled = false;
         }
     };
+    private View.OnClickListener disableOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Do you want restart the application?")
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            reEnableApp();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,8 +157,6 @@ public class MainActivity extends AppCompatActivity
 
         SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
         routeID = Integer.parseInt(sharedPref.getString("routeID", ""));
-
-        Toast.makeText(this, "routeID: " + routeID, Toast.LENGTH_LONG).show();
 
         tvDonorAddr = (TextView) findViewById(R.id.donorTextView);
         tvAgencyAddr = (TextView) findViewById(R.id.agencyTextView);
@@ -436,7 +434,9 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        UpdateEndTimeRequest updateEndTimeRequest = new UpdateEndTimeRequest(routeID, responseListener, errorListener);
+        String tripTime = chrmTrip.getText().toString();
+
+        UpdateEndTimeRequest updateEndTimeRequest = new UpdateEndTimeRequest(routeID, tripTime, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(updateEndTimeRequest);
     }
@@ -571,10 +571,11 @@ class UpdateEndTimeRequest extends StringRequest {
     private static final String UPDATE_END_URL = "http://ihtest.comxa.com/EndTimeLog.php";
     private Map<String, String> params;
 
-    public UpdateEndTimeRequest(int id, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+    public UpdateEndTimeRequest(int id, String tripTime, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.POST, UPDATE_END_URL, listener, errorListener);
         params = new HashMap<>();
         params.put("ID", id + "");
+        params.put("tripTime", tripTime);
     }
 
     @Override
