@@ -169,6 +169,10 @@ public class MainActivity extends AppCompatActivity
         // Retrieve RouteData from MySQL database
         fetchRouteInfo();
 
+        // Check if there's a route
+        if (routeID == 0) {
+            disableApp();
+        }
     }
 
     @Override
@@ -498,6 +502,8 @@ public class MainActivity extends AppCompatActivity
         disableApp();
 
         loading.dismiss();
+
+        routeID = 0;
     }
 
 
