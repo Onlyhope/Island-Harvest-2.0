@@ -71,6 +71,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.aaron.islandharvest.MainActivity" />
         </activity>
+        <activity
+            android:name=".RouteListActivity"
+            android:label="@string/title_activity_route_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
