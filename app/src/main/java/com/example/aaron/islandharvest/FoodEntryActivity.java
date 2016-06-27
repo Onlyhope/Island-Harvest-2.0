@@ -83,7 +83,6 @@ public class FoodEntryActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 //                ((TextView) parent.getChildAt(position)).setTextColor(Color.rgb(104,159,56));
-                Toast.makeText(parent.getContext(), parent.getSelectedItem().toString() + " selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -102,7 +101,6 @@ public class FoodEntryActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 //                ((TextView) parent.getChildAt(position)).setTextColor(Color.rgb(104,159,56));
-                Toast.makeText(parent.getContext(), parent.getSelectedItem().toString() + " selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -127,7 +125,7 @@ public class FoodEntryActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 submissionInfo.clear();
-                                Toast.makeText(FoodEntryActivity.this, "Submission Info resetted", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(FoodEntryActivity.this, "Submission Info has reset", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setPositiveButton("Ok", null)
@@ -184,8 +182,6 @@ public class FoodEntryActivity extends AppCompatActivity {
                     }
 
                     if (status.equalsIgnoreCase("done")) {
-                        Toast toast = Toast.makeText(this, "Signature capture successful!", Toast.LENGTH_SHORT);
-                        toast.show();
                     }
                 }
                 break;

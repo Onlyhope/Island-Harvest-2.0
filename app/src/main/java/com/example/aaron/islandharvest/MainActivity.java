@@ -59,6 +59,22 @@ public class MainActivity extends AppCompatActivity
     private Chronometer chrmTrip;
     private Button btnStartTimeLog;
     private Button btnCompleteTimeLog;
+    private View.OnClickListener disableOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Do you want restart the application?")
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            reEnableApp();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+    };
     private View.OnClickListener completeTimeOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -83,6 +99,7 @@ public class MainActivity extends AppCompatActivity
             } else {
                 uploadSignatures();
                 updateEndTime();
+                routeID = 0;
             }
         }
     };
@@ -122,22 +139,6 @@ public class MainActivity extends AppCompatActivity
             btnStartTimeLogIsEnabled = false;
         }
     };
-    private View.OnClickListener disableOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setMessage("Do you want restart the application?")
-                    .setNegativeButton("No", null)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            reEnableApp();
-                        }
-                    })
-                    .create()
-                    .show();
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-        routeID = Integer.parseInt(sharedPref.getString("routeID", ""));
+        routeID = Integer.parseInt(sharedPref.getString("routeID", "")); // Todo take this from list of routes
 
         tvDonorAddr = (TextView) findViewById(R.id.donorTextView);
         tvAgencyAddr = (TextView) findViewById(R.id.agencyTextView);
@@ -172,6 +173,8 @@ public class MainActivity extends AppCompatActivity
         // Check if there's a route
         if (routeID == 0) {
             disableApp();
+            tvDonorAddr.setText("There are no routes available");
+            tvAgencyAddr.setText("There are no routes available");
         }
     }
 
@@ -347,7 +350,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(String response) {
                 try {
-                    Log.d("x123", response);
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
 
@@ -502,8 +504,6 @@ public class MainActivity extends AppCompatActivity
         disableApp();
 
         loading.dismiss();
-
-        routeID = 0;
     }
 
 

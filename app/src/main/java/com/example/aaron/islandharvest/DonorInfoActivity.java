@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class DonorInfoActivity extends AppCompatActivity {
 
@@ -31,7 +30,6 @@ public class DonorInfoActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
         ID = getIntent().getExtras().getInt("donorID");
-        Toast.makeText(this, "donorID = " + ID, Toast.LENGTH_SHORT).show();
 
         donorAddrTV = (TextView) findViewById(R.id.donorAddressTextView);
         donorSignatureIV = (ImageView) findViewById(R.id.donorSignatureImageButton);
@@ -76,8 +74,6 @@ public class DonorInfoActivity extends AppCompatActivity {
                     if (status.equalsIgnoreCase("done")) {
                         Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
                         donorSignatureIV.setImageBitmap(image);
-                        Toast toast = Toast.makeText(this, "Signature capture successful!", Toast.LENGTH_SHORT);
-                        toast.show();
                     }
                 }
                 break;

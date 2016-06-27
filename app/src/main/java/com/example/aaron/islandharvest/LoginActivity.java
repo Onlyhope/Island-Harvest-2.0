@@ -80,16 +80,19 @@ public class LoginActivity extends AppCompatActivity {
                         String email = jsonResponse.getString("email");
                         String fullName = jsonResponse.getString("fullName");
                         String routeID = jsonResponse.getString("routeID");
+                        String userID = jsonResponse.getString("userID");
 
                         SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
 
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("email", email);
                         editor.putString("fullName", fullName);
-                        editor.putString("routeID", routeID);
+                        editor.putString("routeID", routeID); // Todo transfer this elsewhere
+                        editor.putString("userID", userID);
                         editor.apply();
 
                         Intent takeUserToMain = new Intent(LoginActivity.this, MainActivity.class);
+
                         startActivity(takeUserToMain);
 
                         finish();

@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class AgencyInfoActivity extends AppCompatActivity {
 
@@ -31,7 +30,6 @@ public class AgencyInfoActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
         ID = getIntent().getExtras().getInt("agencyID");
-        Toast.makeText(this, "agencyID = " + ID, Toast.LENGTH_SHORT).show();
 
         agencyAddrTV = (TextView) findViewById(R.id.agencyAddressTextView);
         agencySignatureIV = (ImageView) findViewById(R.id.agencySignatureImageButton);
@@ -76,8 +74,6 @@ public class AgencyInfoActivity extends AppCompatActivity {
                     if (status.equalsIgnoreCase("done")) {
                         Bitmap image = BitmapFactory.decodeFile(LAST_IMAGE);
                         agencySignatureIV.setImageBitmap(image);
-                        Toast toast = Toast.makeText(this, "Signature capture successful!", Toast.LENGTH_SHORT);
-                        toast.show();
                     }
                 }
                 break;
