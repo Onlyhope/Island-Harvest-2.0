@@ -228,13 +228,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_about) {
+            Intent takeUserToAbout = new Intent(MainActivity.this, AboutActivity.class);
+            startActivity(takeUserToAbout);
+
         } else if (id == R.id.action_logout) {
             Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
 
             Intent takeUserToLogin = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(takeUserToLogin);
+            resetApp();
             finish();
         }
 
