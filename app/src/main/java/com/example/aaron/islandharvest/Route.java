@@ -10,11 +10,16 @@ public class Route {
     private int agencyID;
     private int donorID;
 
+    private String agencyAddress;
+    private String donorAddress;
+
     public Route(int initID, int initUserID, int initAgencyID, int initDonorID) {
         ID = initID;
         userID = initUserID;
         agencyID = initAgencyID;
         donorID = initDonorID;
+        agencyAddress = "";
+        donorAddress = "";
     }
 
     // Getters
@@ -35,6 +40,13 @@ public class Route {
         this.donorID = donorID;
     }
 
+    public int getAgencyID() {
+        return agencyID;
+    }
+
+    public void setAgencyID(int agencyID) {
+        this.agencyID = agencyID;
+    }
     // Setters
 
     public int getUserID() {
@@ -45,11 +57,19 @@ public class Route {
         this.userID = userID;
     }
 
-    public int getAgencyID() {
-        return agencyID;
+    public String getAgencyAddress() {
+        return agencyAddress;
     }
 
-    public void setAgencyID(int agencyID) {
-        this.agencyID = agencyID;
+    public void setAgencyAddress(String agencyAddress) {
+        this.agencyAddress = agencyAddress;
+    }
+
+    public String getDonorAddress() {
+        return donorAddress;
+    }
+
+    public void setDonorAddress(String donorAddress) {
+        this.donorAddress = donorAddress;
     }
 }

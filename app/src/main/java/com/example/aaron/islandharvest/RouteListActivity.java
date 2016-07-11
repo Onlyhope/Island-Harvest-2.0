@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -47,23 +48,28 @@ public class RouteListActivity extends AppCompatActivity {
 
         fetchUserRoutes(userID);
         routes = new ArrayList<>();
+        listOfRouteID = new ArrayList<>();
         for (int routeID : listOfRouteID) {
             fetchRouteInfo(routeID);
         }
 
-        initializeEventHandlers();
+
 
         routeAdapter = new RouteListAdapter(this, R.layout.route_list_layout, routes);
         routeListView = (ListView) findViewById(R.id.routeListView);
         routeListView.setAdapter(routeAdapter);
 
-
+        initializeEventHandlers();
     }
 
     private void initializeEventHandlers() {
         routeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (selectedRoute == null) {
+                    selectedRoute = routes.get(position);
+                }
+
                 if (selectedRoute.equals(routes.get(position))) {
                     Intent goToMainActivity = new Intent(RouteListActivity.this, MainActivity.class);
                     goToMainActivity.putExtra("routeID", selectedRoute.getID());
@@ -83,6 +89,8 @@ public class RouteListActivity extends AppCompatActivity {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.v("fetchUserRoutes", response);
+
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
@@ -121,6 +129,9 @@ public class RouteListActivity extends AppCompatActivity {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+
+                Log.v("fetchRouteInfo", response);
+
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
@@ -129,11 +140,14 @@ public class RouteListActivity extends AppCompatActivity {
                         int userID = Integer.parseInt(jsonResponse.getString("userID"));
                         int donorID = Integer.parseInt(jsonResponse.getString("donorID"));
                         int agencyID = Integer.parseInt(jsonResponse.getString("agencyID"));
-                        String donorAddress = jsonResponse.getString("donorAddr");
-                        String agencyAddress = jsonResponse.getString("agencyAddr");
+                        String donorAddress = "Donor: " + jsonResponse.getString("donorAddr");
+                        String agencyAddress = "Agency: " + jsonResponse.getString("agencyAddr");
 
                         Route route = new Route(routeID, userID, agencyID, donorID);
+                        route.setAgencyAddress(agencyAddress);
+                        route.setDonorAddress(donorAddress);
                         routes.add(route);
+
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(RouteListActivity.this);
                         builder.setMessage("Route data not fetched")

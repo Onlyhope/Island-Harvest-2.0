@@ -35,6 +35,12 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         TextView routeIDTextView = (TextView) convertView.findViewById(R.id.route_id_TextView);
         routeIDTextView.setText("" + route.getID());
 
+        TextView routeAgencyAddressTextView = (TextView) convertView.findViewById(R.id.listItem_AgencyAddrTextView);
+        routeAgencyAddressTextView.setText(route.getAgencyAddress());
+
+        TextView routeDonorAgencyAddressTextView = (TextView) convertView.findViewById(R.id.listItem_DonorAddrTextView);
+        routeDonorAgencyAddressTextView.setText(route.getDonorAddress());
+
         return convertView;
     }
 }
