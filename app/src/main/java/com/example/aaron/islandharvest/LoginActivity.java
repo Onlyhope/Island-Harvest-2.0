@@ -91,9 +91,9 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("userID", userID);
                         editor.apply();
 
-                        Intent takeUserToMain = new Intent(LoginActivity.this, MainActivity.class);
-
-                        startActivity(takeUserToMain);
+                        Intent takeUserToRouteList = new Intent(LoginActivity.this, RouteListActivity.class);
+                        takeUserToRouteList.putExtra("userID", userID);
+                        startActivity(takeUserToRouteList);
 
                         finish();
                     } else {

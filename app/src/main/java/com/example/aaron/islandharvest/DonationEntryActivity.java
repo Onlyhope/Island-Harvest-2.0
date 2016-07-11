@@ -28,7 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class FoodEntryActivity extends AppCompatActivity {
+public class DonationEntryActivity extends AppCompatActivity {
 
     private static final int SIGNATURE_ACTIVITY = 1;
     private static final int OTHER_ACTIVITY = 2;
@@ -118,14 +118,14 @@ public class FoodEntryActivity extends AppCompatActivity {
         btnViewSubmission.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(DonationEntryActivity.this);
                 String submission = getSubmissionInfo();
                 builder.setMessage(submission)
                         .setNegativeButton("Reset", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 submissionInfo.clear();
-                                Toast.makeText(FoodEntryActivity.this, "Submission Info has reset", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DonationEntryActivity.this, "Submission Info has reset", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setPositiveButton("Ok", null)
@@ -138,7 +138,7 @@ public class FoodEntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (signatureIV.getDrawable() == null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DonationEntryActivity.this);
                     builder.setMessage("Please sign to submit info...")
                             .setNegativeButton("Ok", null)
                             .create()
@@ -152,7 +152,7 @@ public class FoodEntryActivity extends AppCompatActivity {
         signatureIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent takeUserToCaptureSignature = new Intent(FoodEntryActivity.this, CaptureSignature.class);
+                Intent takeUserToCaptureSignature = new Intent(DonationEntryActivity.this, CaptureSignature.class);
                 takeUserToCaptureSignature.putExtra("caller_class", "volunteer");
                 startActivityForResult(takeUserToCaptureSignature, SIGNATURE_ACTIVITY);
             }
@@ -209,7 +209,7 @@ public class FoodEntryActivity extends AppCompatActivity {
 
         submissionInfo.add(sb.toString());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(DonationEntryActivity.this);
         builder.setMessage("Added")
                 .setNegativeButton("Ok", null)
                 .create()
@@ -243,7 +243,7 @@ public class FoodEntryActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String response) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(DonationEntryActivity.this);
                 builder.setMessage(response)
                         .setNegativeButton("Ok", null)
                         .create()
@@ -254,16 +254,16 @@ public class FoodEntryActivity extends AppCompatActivity {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(FoodEntryActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(DonationEntryActivity.this, error.toString(), Toast.LENGTH_LONG).show();
             }
         };
 
-        Toast.makeText(FoodEntryActivity.this, "Submitting Information...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(DonationEntryActivity.this, "Submitting Information...", Toast.LENGTH_SHORT).show();
 
         int ID = 0; // placeHolder variable, for method not used
 
 //        FoodEntryRequest foodEntryRequest = new FoodEntryRequest(ID, foodDescrip, foodType, foodAmount, responseListener, errorListener);
-//        RequestQueue queue = Volley.newRequestQueue(FoodEntryActivity.this);
+//        RequestQueue queue = Volley.newRequestQueue(DonationEntryActivity.this);
 //        queue.add(foodEntryRequest);
     }
 
@@ -351,7 +351,7 @@ public class FoodEntryActivity extends AppCompatActivity {
                                 spinFoodDescrip.setSelection(0);
                         }
                     } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FoodEntryActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DonationEntryActivity.this);
                         builder.setMessage("Food data not fetched")
                                 .setNegativeButton("Ok", null)
                                 .create()
@@ -366,14 +366,14 @@ public class FoodEntryActivity extends AppCompatActivity {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(FoodEntryActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(DonationEntryActivity.this, error.toString(), Toast.LENGTH_LONG).show();
             }
         };
 
         int ID = 0; // placeholder variable for not used method
 
         FetchFoodRequest fetchFoodRequest = new FetchFoodRequest(ID, responseListener, errorListener);
-        RequestQueue queue = Volley.newRequestQueue(FoodEntryActivity.this);
+        RequestQueue queue = Volley.newRequestQueue(DonationEntryActivity.this);
         queue.add(fetchFoodRequest);
     }
 }

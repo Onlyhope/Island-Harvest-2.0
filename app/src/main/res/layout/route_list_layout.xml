@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/route_id_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="130dp"
+        android:padding="5dp"
+        android:text="R1"
+        android:textAlignment="center"
+        android:textSize="40sp" />
+
+    <LinearLayout
+        android:id="@+id/listItem_LinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/listItem_AgencyAddrTextView"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:padding="5dp"
+            android:text="Agency Address blah blah blah"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/listItem_DonorAddrTextView"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:padding="5dp"
+            android:text="Donor Address blah blah blah"
+            android:textSize="24sp" />
+    </LinearLayout>
+</LinearLayout>

@@ -20,6 +20,7 @@
         $response["email"] = $email;
         $response["password"] = $password;
         $response["routeID"] = $routeID;
+        $response["userID"] = $userID;
 
     }
     

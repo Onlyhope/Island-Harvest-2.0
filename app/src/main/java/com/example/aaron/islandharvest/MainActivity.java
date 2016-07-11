@@ -45,15 +45,16 @@ public class MainActivity extends AppCompatActivity
 
     public static final String USER_PREFERENCES = "userPreferences";
     private static final String START_TIME = "start_time";
-    private static int routeID;
-    private static int userID;
-    private static int agencyID;
-    private static int donorID;
-    private static int foodID;
     private static long startTime;
     private static boolean btnStartTimeLogIsEnabled = true;
     private static boolean btnCompleteTimeLogIsEnabled = true;
     private static boolean isChrmMeterRunning = false;
+    private int routeID;
+    private int userID;
+    private int agencyID;
+    private int donorID;
+    private String donorAddress;
+    private String agencyAddress;
     private TextView tvDonorAddr;
     private TextView tvAgencyAddr;
     private Chronometer chrmTrip;
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity
             isChrmMeterRunning = false;
             Toast.makeText(MainActivity.this, "Trip took " + chrmTrip.getText().toString(), Toast.LENGTH_SHORT).show();
 
-            if (FoodEntryActivity.LAST_IMAGE == null
+            if (DonationEntryActivity.LAST_IMAGE == null
                     || AgencyInfoActivity.LAST_IMAGE == null
                     || DonorInfoActivity.LAST_IMAGE == null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity
                         .setNegativeButton("Ok", null)
                         .create()
                         .show();
-            } else if (FoodEntryActivity.submissionInfo.isEmpty()) {
+            } else if (DonationEntryActivity.submissionInfo.isEmpty()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage("You do not have any submissions")
                         .setNegativeButton("Ok", null)
@@ -156,8 +157,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-        routeID = Integer.parseInt(sharedPref.getString("routeID", "")); // Todo take this from list of routes
+        userID = getIntent().getIntExtra("userID", -1);
+        routeID = getIntent().getIntExtra("routeID", -1);
+        donorID = getIntent().getIntExtra("donorID", -1);
+        agencyID = getIntent().getIntExtra("agencyID", -1);
 
         tvDonorAddr = (TextView) findViewById(R.id.donorTextView);
         tvAgencyAddr = (TextView) findViewById(R.id.agencyTextView);
@@ -166,6 +169,7 @@ public class MainActivity extends AppCompatActivity
         btnCompleteTimeLog = (Button) findViewById(R.id.completeTimeLogButton);
 
         chrmTrip.setBase(SystemClock.elapsedRealtime());
+
 
         // Retrieve RouteData from MySQL database
         fetchRouteInfo();
@@ -258,9 +262,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_food_entry) {
-            Intent goToFoodEntry = new Intent(MainActivity.this, FoodEntryActivity.class);
-            goToFoodEntry.putExtra("foodID", foodID);
-            startActivity(goToFoodEntry);
+            Intent goToDonationEntry = new Intent(MainActivity.this, DonationEntryActivity.class);
+            startActivity(goToDonationEntry);
         } else if (id == R.id.nav_donor) {
             Intent goToDonorInfo = new Intent(MainActivity.this, DonorInfoActivity.class);
             goToDonorInfo.putExtra("donorID", donorID);
@@ -309,9 +312,9 @@ public class MainActivity extends AppCompatActivity
 
         AgencyInfoActivity.LAST_IMAGE = null;
         DonorInfoActivity.LAST_IMAGE = null;
-        FoodEntryActivity.LAST_IMAGE = null;
+        DonationEntryActivity.LAST_IMAGE = null;
 
-        FoodEntryActivity.submissionInfo.clear();
+        DonationEntryActivity.submissionInfo.clear();
 
         btnStartTimeLog.setOnClickListener(startTimeOnClickListener);
         btnStartTimeLog.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
@@ -340,6 +343,10 @@ public class MainActivity extends AppCompatActivity
 
     // Server Code
 
+    private void fetchAgencyDonorInfo() {
+        Response.Listener<String> responseListener;
+    }
+
     /**
      * Fetches the IDs of the agency, donor, and volunteer assigned to the route.
      */
@@ -360,7 +367,6 @@ public class MainActivity extends AppCompatActivity
                         userID = Integer.parseInt(jsonResponse.getString("userID"));
                         donorID = Integer.parseInt(jsonResponse.getString("donorID"));
                         agencyID = Integer.parseInt(jsonResponse.getString("agencyID"));
-                        foodID = Integer.parseInt(jsonResponse.getString("foodID"));
                         tvDonorAddr.setText(donorAddress + jsonResponse.getString("donorAddr"));
                         tvAgencyAddr.setText(agencyAddress + jsonResponse.getString("agencyAddr"));
 
@@ -369,7 +375,6 @@ public class MainActivity extends AppCompatActivity
                         editor.putString("userID", userID + "");
                         editor.putString("donorID", donorID + "");
                         editor.putString("agencyID", agencyID + "");
-                        editor.putString("foodID", foodID + "");
                         editor.apply();
 
                     } else {
@@ -482,7 +487,7 @@ public class MainActivity extends AppCompatActivity
         Bitmap donorBMP = BitmapFactory.decodeFile(DonorInfoActivity.LAST_IMAGE);
         String donorSig = getStringImage(donorBMP);
 
-        Bitmap volunteerBMP = BitmapFactory.decodeFile(FoodEntryActivity.LAST_IMAGE);
+        Bitmap volunteerBMP = BitmapFactory.decodeFile(DonationEntryActivity.LAST_IMAGE);
         String volunteerSig = getStringImage(volunteerBMP);
 
         UploadImageRequest uploadAgencySigRequest = new UploadAgencyImageRequest(routeID, name, agencySig, responseListener, errorListener);
@@ -493,7 +498,7 @@ public class MainActivity extends AppCompatActivity
         queue.add(uploadDonorSigRequest);
         queue.add(uploadVolunteerSigRequest);
 
-        for (String entry : FoodEntryActivity.submissionInfo) {
+        for (String entry : DonationEntryActivity.submissionInfo) {
             entry.replaceAll(" ", "");
             String[] params = entry.split(",", 3);
             Log.v("log_tag", params.toString());

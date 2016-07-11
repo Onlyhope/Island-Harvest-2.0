@@ -4,15 +4,16 @@
 
     $ID = $_POST["ID"];
 
-    $statement = mysqli_prepare($con, "SELECT ID, userID, foodID, agencyID, donorID FROM route WHERE ID = ?");
+    $statement = mysqli_prepare($con, "SELECT ID, userID, agencyID, donorID FROM route WHERE ID = ?");
     mysqli_stmt_bind_param($statement, "i", $ID);
     mysqli_stmt_execute($statement);
 
     mysqli_stmt_store_result($statement);
-    mysqli_stmt_bind_result($statement, $ID, $userID, $foodID, $agencyID, $donorID);
+    mysqli_stmt_bind_result($statement, $ID, $userID, $agencyID, $donorID);
 
     $response = array();
     $response["success"] = false;
+
 
     while(mysqli_stmt_fetch($statement)) {
         $response["success"] = true;
@@ -20,8 +21,6 @@
         $response["userID"] = $userID;
         $response["agencyID"] = $agencyID;
         $response["donorID"] = $donorID;
-        $response["foodID"] = $foodID;
-
     }
 
     $sql = "SELECT donorAddr FROM donor WHERE ID = ".$response["donorID"];
