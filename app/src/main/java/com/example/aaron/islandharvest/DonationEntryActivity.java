@@ -121,14 +121,14 @@ public class DonationEntryActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DonationEntryActivity.this);
                 String submission = getSubmissionInfo();
                 builder.setMessage(submission)
-                        .setNegativeButton("Reset", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 submissionInfo.clear();
                                 Toast.makeText(DonationEntryActivity.this, "Submission Info has reset", Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setPositiveButton("Ok", null)
+                        .setNegativeButton("Ok", null)
                         .create()
                         .show();
             }

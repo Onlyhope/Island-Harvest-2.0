@@ -41,6 +41,10 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         TextView routeDonorAgencyAddressTextView = (TextView) convertView.findViewById(R.id.listItem_DonorAddrTextView);
         routeDonorAgencyAddressTextView.setText(route.getDonorAddress());
 
+        if (route.isComplete()) {
+            convertView.setBackgroundColor(convertView.getResources().getColor(R.color.colorPrimaryDark));
+        }
+
         return convertView;
     }
 }

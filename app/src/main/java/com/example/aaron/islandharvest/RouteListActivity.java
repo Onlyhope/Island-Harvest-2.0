@@ -1,6 +1,8 @@
 package com.example.aaron.islandharvest;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -30,10 +32,9 @@ import java.util.Map;
 
 public class RouteListActivity extends AppCompatActivity {
 
+    public static Route selectedRoute;
     private ListView routeListView;
     private RouteListAdapter routeAdapter;
-    private Route selectedRoute;
-
     private List<Route> routes;
     private int userID;
 
@@ -44,7 +45,8 @@ public class RouteListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        userID = getIntent().getIntExtra("userID", -1);
+        SharedPreferences sharedPref = getSharedPreferences(MainActivity.USER_PREFERENCES, Context.MODE_PRIVATE);
+        userID = sharedPref.getInt("userID", -1);
         routes = new ArrayList<>();
 
         routeAdapter = new RouteListAdapter(this, R.layout.route_list_layout, routes);
@@ -53,6 +55,12 @@ public class RouteListActivity extends AppCompatActivity {
 
         fetchUserRoutes(userID);
         initializeEventHandlers();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        routeAdapter.notifyDataSetChanged();
     }
 
     private void initializeEventHandlers() {
@@ -64,33 +72,45 @@ public class RouteListActivity extends AppCompatActivity {
                 }
 
                 if (selectedRoute.equals(routes.get(position))) {
-                    PopupMenu popup = new PopupMenu(view.getContext(), view);
-                    popup.inflate(R.menu.route_popup_menu);
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            String userClick = item.getTitle().toString();
+                    if (selectedRoute.isComplete()) {
+                        Toast.makeText(RouteListActivity.this, "Route is compeleted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        PopupMenu popup = new PopupMenu(view.getContext(), view);
+                        popup.inflate(R.menu.route_popup_menu);
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                String userClick = item.getTitle().toString();
+                                SharedPreferences sharedPref = getSharedPreferences(MainActivity.USER_PREFERENCES, Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
 
-                            switch (userClick) {
-                                case "Start":
-                                    Intent goToMainActivity = new Intent(RouteListActivity.this, MainActivity.class);
-                                    goToMainActivity.putExtra("routeID", selectedRoute.getID());
-                                    goToMainActivity.putExtra("userID", selectedRoute.getUserID());
-                                    goToMainActivity.putExtra("donorID", selectedRoute.getDonorID());
-                                    goToMainActivity.putExtra("agencyID", selectedRoute.getAgencyID());
-                                    startActivity(goToMainActivity);
-                                    break;
-                                case "Complete":
-                                    break;
-                                default:
-                                    Toast.makeText(RouteListActivity.this, "default selected", Toast.LENGTH_SHORT).show();
-                                    break;
+                                switch (userClick) {
+                                    case "Start":
+                                        Intent goToMainActivity = new Intent(RouteListActivity.this, MainActivity.class);
+
+                                        editor.putInt("routeID", selectedRoute.getID());
+                                        editor.putInt("userID", selectedRoute.getUserID());
+                                        editor.putInt("donorID", selectedRoute.getDonorID());
+                                        editor.putInt("agencyID", selectedRoute.getAgencyID());
+                                        editor.putString("agencyAddress", selectedRoute.getAgencyAddress());
+                                        editor.putString("donorAddress", selectedRoute.getDonorAddress());
+                                        editor.apply();
+
+                                        startActivity(goToMainActivity);
+                                        break;
+                                    case "View":
+                                        Toast.makeText(RouteListActivity.this, "View feature coming soon", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    default:
+                                        Toast.makeText(RouteListActivity.this, "Default selected", Toast.LENGTH_SHORT).show();
+                                        break;
+                                }
+
+                                return false;
                             }
-
-                            return false;
-                        }
-                    });
-                    popup.show();
+                        });
+                        popup.show();
+                    }
                 } else {
                     selectedRoute = routes.get(position);
                 }

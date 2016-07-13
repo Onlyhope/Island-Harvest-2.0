@@ -10,8 +10,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/option_complete"
+        android:id="@+id/option_view"
         android:orderInCategory="101"
-        android:title="Complete"
+        android:title="View"
         app:showAsAction="never" />
 </menu>

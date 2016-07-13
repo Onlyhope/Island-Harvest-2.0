@@ -55,27 +55,12 @@ public class MainActivity extends AppCompatActivity
     private int donorID;
     private String donorAddress;
     private String agencyAddress;
+
     private TextView tvDonorAddr;
     private TextView tvAgencyAddr;
     private Chronometer chrmTrip;
     private Button btnStartTimeLog;
     private Button btnCompleteTimeLog;
-    private View.OnClickListener disableOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setMessage("Do you want restart the application?")
-                    .setNegativeButton("No", null)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            reEnableApp();
-                        }
-                    })
-                    .create()
-                    .show();
-        }
-    };
     private View.OnClickListener completeTimeOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -100,7 +85,7 @@ public class MainActivity extends AppCompatActivity
             } else {
                 uploadSignatures();
                 updateEndTime();
-                routeID = 0;
+                RouteListActivity.selectedRoute.setComplete(true);
             }
         }
     };
@@ -140,6 +125,23 @@ public class MainActivity extends AppCompatActivity
             btnStartTimeLogIsEnabled = false;
         }
     };
+    private View.OnClickListener disableOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Do you want to restart the route?")
+                    .setPositiveButton("No", null)
+                    .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            reEnableApp();
+                            RouteListActivity.selectedRoute.setComplete(false);
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,11 +159,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        userID = getIntent().getIntExtra("userID", -1);
-        routeID = getIntent().getIntExtra("routeID", -1);
-        donorID = getIntent().getIntExtra("donorID", -1);
-        agencyID = getIntent().getIntExtra("agencyID", -1);
-
         tvDonorAddr = (TextView) findViewById(R.id.donorTextView);
         tvAgencyAddr = (TextView) findViewById(R.id.agencyTextView);
         chrmTrip = (Chronometer) findViewById(R.id.tripChronometer);
@@ -170,23 +167,24 @@ public class MainActivity extends AppCompatActivity
 
         chrmTrip.setBase(SystemClock.elapsedRealtime());
 
+        // Todo need to create a separate .java file to hold all key values
+        SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
+        userID = sharedPref.getInt("userID", -1);
+        routeID = sharedPref.getInt("routeID", -1);
+        donorID = sharedPref.getInt("donorID", -1);
+        agencyID = sharedPref.getInt("agencyID", -1);
+        donorAddress = "Donor Address:\n";
+        agencyAddress = "Agency Address:\n";
+        donorAddress = donorAddress + sharedPref.getString("donorAddress", null);
+        agencyAddress = agencyAddress + sharedPref.getString("agencyAddress", null);
 
-        // Retrieve RouteData from MySQL database
-        fetchRouteInfo();
-
-        // Check if there's a route
-        if (routeID == 0) {
-            disableApp();
-            tvDonorAddr.setText("There are no routes available");
-            tvAgencyAddr.setText("There are no routes available");
-        }
+        tvDonorAddr.setText(donorAddress);
+        tvAgencyAddr.setText(agencyAddress);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
 
         if (isChrmMeterRunning) {
             chrmTrip.setBase(startTime);
@@ -276,6 +274,23 @@ public class MainActivity extends AppCompatActivity
             startActivity(goToAgencyInfo);
         } else if (id == R.id.nav_reset) {
             resetApp();
+        } else if (id == R.id.nav_route_list) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Are you sure you want to exit the current route?");
+            builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent goToRouteList = new Intent(MainActivity.this, RouteListActivity.class);
+                    RouteListActivity.selectedRoute.setComplete(true);
+                    startActivity(goToRouteList);
+                    reEnableApp();
+                    finish();
+                }
+            });
+            builder.setPositiveButton("No", null);
+            builder.create();
+            builder.show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

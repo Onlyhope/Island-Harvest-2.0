@@ -13,6 +13,8 @@ public class Route {
     private String agencyAddress;
     private String donorAddress;
 
+    private boolean isComplete;
+
     public Route(int initID, int initUserID, int initAgencyID, int initDonorID) {
         ID = initID;
         userID = initUserID;
@@ -20,6 +22,7 @@ public class Route {
         donorID = initDonorID;
         agencyAddress = "";
         donorAddress = "";
+        isComplete = false;
     }
 
     // Getters
@@ -47,7 +50,16 @@ public class Route {
     public void setAgencyID(int agencyID) {
         this.agencyID = agencyID;
     }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
     // Setters
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
+    }
 
     public int getUserID() {
         return userID;

@@ -21,7 +21,7 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String USER_PREFERENCES = "userPreferences";
+    public static final String USER_PREFERENCES = "userPreferences";
 
     // Layout Components
     private Button btnLogin;
@@ -79,20 +79,17 @@ public class LoginActivity extends AppCompatActivity {
                     if (success) {
                         String email = jsonResponse.getString("email");
                         String fullName = jsonResponse.getString("fullName");
-                        String routeID = jsonResponse.getString("routeID");
                         String userID = jsonResponse.getString("userID");
 
-                        SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref = getSharedPreferences(MainActivity.USER_PREFERENCES, Context.MODE_PRIVATE);
 
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("email", email);
                         editor.putString("fullName", fullName);
-                        editor.putString("routeID", routeID); // Todo transfer this elsewhere
-                        editor.putString("userID", userID);
+                        editor.putInt("userID", Integer.parseInt(userID));
                         editor.apply();
 
                         Intent takeUserToRouteList = new Intent(LoginActivity.this, RouteListActivity.class);
-                        takeUserToRouteList.putExtra("userID", Integer.parseInt(userID));
                         startActivity(takeUserToRouteList);
 
                         finish();
