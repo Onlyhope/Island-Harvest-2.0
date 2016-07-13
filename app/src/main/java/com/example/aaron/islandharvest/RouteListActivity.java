@@ -4,8 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -30,11 +31,10 @@ import java.util.Map;
 public class RouteListActivity extends AppCompatActivity {
 
     private ListView routeListView;
-    private List<Route> routes;
     private RouteListAdapter routeAdapter;
     private Route selectedRoute;
 
-    private ArrayList<Integer> listOfRouteID;
+    private List<Route> routes;
     private int userID;
 
     @Override
@@ -45,20 +45,13 @@ public class RouteListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         userID = getIntent().getIntExtra("userID", -1);
-
-        fetchUserRoutes(userID);
         routes = new ArrayList<>();
-        listOfRouteID = new ArrayList<>();
-        for (int routeID : listOfRouteID) {
-            fetchRouteInfo(routeID);
-        }
-
-
 
         routeAdapter = new RouteListAdapter(this, R.layout.route_list_layout, routes);
         routeListView = (ListView) findViewById(R.id.routeListView);
         routeListView.setAdapter(routeAdapter);
 
+        fetchUserRoutes(userID);
         initializeEventHandlers();
     }
 
@@ -71,17 +64,39 @@ public class RouteListActivity extends AppCompatActivity {
                 }
 
                 if (selectedRoute.equals(routes.get(position))) {
-                    Intent goToMainActivity = new Intent(RouteListActivity.this, MainActivity.class);
-                    goToMainActivity.putExtra("routeID", selectedRoute.getID());
-                    goToMainActivity.putExtra("userID", selectedRoute.getUserID());
-                    goToMainActivity.putExtra("donorID", selectedRoute.getDonorID());
-                    goToMainActivity.putExtra("agencyID", selectedRoute.getAgencyID());
-                    startActivity(goToMainActivity);
+                    PopupMenu popup = new PopupMenu(view.getContext(), view);
+                    popup.inflate(R.menu.route_popup_menu);
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            String userClick = item.getTitle().toString();
+
+                            switch (userClick) {
+                                case "Start":
+                                    Intent goToMainActivity = new Intent(RouteListActivity.this, MainActivity.class);
+                                    goToMainActivity.putExtra("routeID", selectedRoute.getID());
+                                    goToMainActivity.putExtra("userID", selectedRoute.getUserID());
+                                    goToMainActivity.putExtra("donorID", selectedRoute.getDonorID());
+                                    goToMainActivity.putExtra("agencyID", selectedRoute.getAgencyID());
+                                    startActivity(goToMainActivity);
+                                    break;
+                                case "Complete":
+                                    break;
+                                default:
+                                    Toast.makeText(RouteListActivity.this, "default selected", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+
+                            return false;
+                        }
+                    });
+                    popup.show();
                 } else {
                     selectedRoute = routes.get(position);
                 }
             }
         });
+
     }
 
     // Server Code
@@ -89,17 +104,21 @@ public class RouteListActivity extends AppCompatActivity {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.v("fetchUserRoutes", response);
 
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
 
                     if (success) {
-                        while (true) {
-                            int id = 0;
-                            listOfRouteID.add(id);
+
+                        String ids = jsonResponse.getString("ids");
+                        String[] idArr = ids.split(",");
+
+                        for (int i = 0; i < idArr.length; i++) {
+                            fetchRouteInfo(Integer.parseInt(idArr[i]));
                         }
+
+
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(RouteListActivity.this);
                         builder.setMessage("Routes not fetched")
@@ -123,15 +142,13 @@ public class RouteListActivity extends AppCompatActivity {
         FetchUserRoutesRequest fetchUserRoutesRequest = new FetchUserRoutesRequest(userID, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(RouteListActivity.this);
         queue.add(fetchUserRoutesRequest);
+
     }
 
     private void fetchRouteInfo(final int routeID) {
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
-                Log.v("fetchRouteInfo", response);
-
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
@@ -147,7 +164,7 @@ public class RouteListActivity extends AppCompatActivity {
                         route.setAgencyAddress(agencyAddress);
                         route.setDonorAddress(donorAddress);
                         routes.add(route);
-
+                        routeAdapter.notifyDataSetChanged();
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(RouteListActivity.this);
                         builder.setMessage("Route data not fetched")
@@ -176,7 +193,7 @@ public class RouteListActivity extends AppCompatActivity {
 
 class FetchUserRoutesRequest extends StringRequest {
 
-    private static final String FETCH_USER_ROUTE_URL = "http://ihtest.comxa.com/FetchUserRoute.php";
+    private static final String FETCH_USER_ROUTE_URL = "http://ihtest.comxa.com/FetchUserRoutes.php";
     private Map<String, String> params;
 
     public FetchUserRoutesRequest(int userID, Response.Listener<String> listener, Response.ErrorListener errorListener) {

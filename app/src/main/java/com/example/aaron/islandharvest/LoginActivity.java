@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                         editor.apply();
 
                         Intent takeUserToRouteList = new Intent(LoginActivity.this, RouteListActivity.class);
-                        takeUserToRouteList.putExtra("userID", userID);
+                        takeUserToRouteList.putExtra("userID", Integer.parseInt(userID));
                         startActivity(takeUserToRouteList);
 
                         finish();
