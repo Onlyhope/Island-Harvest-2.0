@@ -32,9 +32,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,7 +82,7 @@ public class MainActivity extends AppCompatActivity
             } else {
                 uploadSignatures();
                 updateEndTime();
-                RouteListActivity.selectedRoute.setComplete(true);
+                completeRoute(routeID);
             }
         }
     };
@@ -135,7 +132,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             reEnableApp();
-                            RouteListActivity.selectedRoute.setComplete(false);
+                            restartRoute(routeID);
                         }
                     })
                     .create()
@@ -358,50 +355,12 @@ public class MainActivity extends AppCompatActivity
 
     // Server Code
 
-    private void fetchAgencyDonorInfo() {
-        Response.Listener<String> responseListener;
-    }
-
-    /**
-     * Fetches the IDs of the agency, donor, and volunteer assigned to the route.
-     */
-    public void fetchRouteInfo() {
+    private void completeRoute(int routeID) {
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
-
             @Override
             public void onResponse(String response) {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-
-                    if (success) {
-                        String donorAddress = "Donor Address:\n";
-                        String agencyAddress = "Agency Address:\n";
-
-                        userID = Integer.parseInt(jsonResponse.getString("userID"));
-                        donorID = Integer.parseInt(jsonResponse.getString("donorID"));
-                        agencyID = Integer.parseInt(jsonResponse.getString("agencyID"));
-                        tvDonorAddr.setText(donorAddress + jsonResponse.getString("donorAddr"));
-                        tvAgencyAddr.setText(agencyAddress + jsonResponse.getString("agencyAddr"));
-
-                        SharedPreferences sharedPref = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("userID", userID + "");
-                        editor.putString("donorID", donorID + "");
-                        editor.putString("agencyID", agencyID + "");
-                        editor.apply();
-
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setMessage("Route data not fetched")
-                                .setNegativeButton("Ok", null)
-                                .create()
-                                .show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                RouteListActivity.selectedRoute.setComplete(true);
             }
         };
 
@@ -412,10 +371,31 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        FetchRouteDataRequest fetchRouteDataRequest = new FetchRouteDataRequest(routeID, responseListener, errorListener);
+        CompleteRouteRequest completeRouteRequest = new CompleteRouteRequest(routeID, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-        queue.add(fetchRouteDataRequest);
+        queue.add(completeRouteRequest);
     }
+
+    private void restartRoute(int routeID) {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                RouteListActivity.selectedRoute.setComplete(false);
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+            }
+        };
+
+        RestartRouteRequest restartRouteRequest = new RestartRouteRequest(routeID, responseListener, errorListener);
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        queue.add(restartRouteRequest);
+    }
+
 
     /**
      * Logged the start time as a timestamp in the database.
@@ -612,5 +592,34 @@ class UpdateEndTimeRequest extends StringRequest {
         return params;
     }
 
+}
+
+class CompleteRouteRequest extends StringRequest {
+
+    private static final String COMPLETE_ROUTE_URL = "http://ihtest.comxa.com/CompleteRoute.php";
+    private Map<String, String> params;
+
+    public CompleteRouteRequest(int id, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(Method.POST, COMPLETE_ROUTE_URL, listener, errorListener);
+        params = new HashMap<>();
+        params.put("routeID", id + "");
+    }
+
+    @Override
+    public Map<String, String> getParams() {
+        return params;
+    }
+}
+
+class RestartRouteRequest extends StringRequest {
+
+    private static final String RESTART_ROUTE_URL = "http://ihtest.comxa.com/RestartRoute.php";
+    private Map<String, String> params;
+
+    public RestartRouteRequest(int id, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(Method.POST, RESTART_ROUTE_URL, listener, errorListener);
+        params = new HashMap<>();
+        params.put("routeID", id + "");
+    }
 }
 
